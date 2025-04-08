@@ -35,6 +35,11 @@ const router = createRouter({
       component: news
     },
     {
+      path: '/academic',
+      name: '中心动态',
+      component: academic
+    },
+    {
       path: '/scenicspot',
       name: '热门景点',
       component: scenicspot

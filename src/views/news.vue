@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import PageBanner from "@/layout/page-banner.vue";
 import Footer from "@/layout/footer.vue";
 import Pagination from "@/components/pagination.vue";
+import { listApi } from "@/api/list";
 // Your script here
 /**
  * 路由对象
@@ -15,7 +16,35 @@ const route = useRoute();
 const router = useRouter();
 // 基础变量区域（通用性）
 
+const news = ref([]); // 新闻数据
+const pagination = ref({
+  page: 1,
+  limit: 10,
+  total: 0,
+  last_page: 0,
+  onchange: (page) => {
+    console.log(page);
+    pagination.value.page = page;
+    getNews();
+  },
+});
+const getNews = async () => {
+  let params = {
+    page: pagination.value.page,
+    limit: pagination.value.limit,
+    cid: route.query.cid,
+  };
+  listApi(params).then((res) => {
+    console.log(res);
+    news.value = res.data.data;
+    pagination.value.total = res.data.total;
+    pagination.value.last_page = res.data.last_page;
+  });
+};
 // 基础函数区域（通用性）
+onMounted(() => {
+  getNews();
+});
 </script>
 
 <template>
@@ -30,46 +59,16 @@ const router = useRouter();
         <span>新闻资讯</span>
       </div>
       <div class="page-items">
-        <div class="page-item">
+        <div class="page-item" v-for="(item, index) in news" :key="index">
           <div class="cover">
-            <img src="../assets/image/news.webp" alt="" />
+            <img :src="item.image" alt="" />
           </div>
           <div class="content">
             <div class="title">
-              阿拉伯国家官员研修班 |准确理解中国特色大国外交内涵，感受红色真理力量
+              {{ item.title }}
             </div>
             <div class="desc">
-              政治外交领域：10月25日，约外交大臣萨法迪在伦敦与美国国务卿布林肯会晤时，呼吁向以色列施压，要求以方停止在加沙地带实施“种族清洗”。10月28日，约外交和侨民事务部发言人苏菲安·古达在一份声明中称，约强烈谴责以色列议会当天通过禁止联合国近东巴勒斯坦难民救济和工程处（近东救济工程处）在以色列控制地区开展活动的...
-            </div>
-          </div>
-          <div class="time">2023 - 10 -11</div>
-        </div>
-
-        <div class="page-item">
-          <div class="cover">
-            <img src="../assets/image/news.webp" alt="" />
-          </div>
-          <div class="content">
-            <div class="title">
-              阿拉伯国家官员研修班 |准确理解中国特色大国外交内涵，感受红色真理力量
-            </div>
-            <div class="desc">
-              政治外交领域：10月25日，约外交大臣萨法迪在伦敦与美国国务卿布林肯会晤时，呼吁向以色列施压，要求以方停止在加沙地带实施“种族清洗”。10月28日，约外交和侨民事务部发言人苏菲安·古达在一份声明中称，约强烈谴责以色列议会当天通过禁止联合国近东巴勒斯坦难民救济和工程处（近东救济工程处）在以色列控制地区开展活动的...
-            </div>
-          </div>
-          <div class="time">2023 - 10 -11</div>
-        </div>
-
-        <div class="page-item">
-          <div class="cover">
-            <img src="../assets/image/news.webp" alt="" />
-          </div>
-          <div class="content">
-            <div class="title">
-              阿拉伯国家官员研修班 |准确理解中国特色大国外交内涵，感受红色真理力量
-            </div>
-            <div class="desc">
-              政治外交领域：10月25日，约外交大臣萨法迪在伦敦与美国国务卿布林肯会晤时，呼吁向以色列施压，要求以方停止在加沙地带实施“种族清洗”。10月28日，约外交和侨民事务部发言人苏菲安·古达在一份声明中称，约强烈谴责以色列议会当天通过禁止联合国近东巴勒斯坦难民救济和工程处（近东救济工程处）在以色列控制地区开展活动的...
+              {{ item.description }}
             </div>
           </div>
           <div class="time">2023 - 10 -11</div>
@@ -78,7 +77,7 @@ const router = useRouter();
     </section>
     <!-- Your code here -->
   </div>
-  <Pagination></Pagination>
+  <Pagination :pagination="pagination"></Pagination>
   <Footer></Footer>
 </template>
 

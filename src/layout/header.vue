@@ -29,11 +29,19 @@ const changeLang = (index) => {
   });
 };
 const menuList = ref([]); // 菜单列表
+const activeMenu = ref({}); // 当前选中的菜单
 onMounted(() => {
   // 获取路由参数
   menu().then((res) => {
     if (res.code === 1) {
       menuList.value = res.data;
+      menuList.value.forEach((item) => {
+        if (item.urlname === route.path) {
+          activeMenu.value = item;
+          localStorage.setItem("activeMenu", JSON.stringify(item));
+          console.log(item);
+        }
+      });
     }
   });
 });
@@ -51,9 +59,9 @@ onMounted(() => {
             class="item"
             v-for="(item, index) in menuList"
             :key="index"
-            :class="{ active: route.path === item.path }"
+            :class="{ active: route.path === item.urlname }"
           >
-            <router-link to="/">{{ item.name }}</router-link>
+            <router-link :to="item.urlname">{{ item.name }}</router-link>
           </div>
           <div class="langs">
             <span

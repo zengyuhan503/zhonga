@@ -12,5 +12,18 @@ const get = async (url, params = null) => {
     })
 };
 
-export const banner = () => get('/addons/ldcms/api.v1/ad?name=banner');
+export const bannerApi = () => get('/addons/ldcms/api.v1/ad?name=banner');
 export const menu = () => get('/addons/ldcms/api.v1/nav');
+export const news = {
+    top: (cid) => get(`/addons/ldcms/api.v1/lists?cid=${cid}&page=1&limit=20&last_page=1&flag=top`),
+    no_top_list: (params) => get(`/addons/ldcms/api.v1/not_top?cid=${params.cid}&page=${params.page}&limit=${params.limit}&last_page=1`),
+}
+export const category = (pid) => get(`/addons/ldcms/api.v1/category?pid=${pid}`);
+
+export const listApi = (params) => {
+    // https://ccctcorg.cn/addons/ldcms/api.v1/lists?cid=143&page=1&limit=20&last_page=1
+    return get(`/addons/ldcms/api.v1/lists?cid=${params.cid}&page=${params.page}&limit=${params.limit}&last_page=1`)
+}
+export const pagedetailApi = (id) => {
+    return get(`/addons/ldcms/api.v1/detail?id=${id}`)
+}

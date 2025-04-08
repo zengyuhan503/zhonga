@@ -13,3 +13,6 @@ a {
 p{
     margin: 0;
 }
+button{
+    cursor: pointer;
+}

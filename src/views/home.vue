@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import Header from "../layout/header.vue";
 import Footer from "@/layout/footer.vue";
-import { banner } from "@/api/list";
+import { bannerApi, news, category, listApi } from "@/api/list";
 
 // Import Swiper styles
 import "swiper/css";
@@ -24,21 +24,72 @@ const route = useRoute();
  */
 const router = useRouter();
 
-const onSwiper = (swiper) => {
-  console.log(swiper);
-};
-const onSlideChange = () => {
-  console.log("slide change");
-};
-
 // 基础变量区域（通用性）
 
+const banner = ref("");
+const newsItems = ref({
+  top: [],
+  list: [],
+});
+const categorys = ref([]);
+const categoryActive = ref(""); // 选中的tab
+const categoryActiveList = ref([]); // 选中的tab列表
+let newcid, categoryid, sportid;
+
 // 基础函数区域（通用性）
-onMounted(() => {
-  // 页面加载完成后执行的代码
-  console.log("页面加载完成");
-  banner().then((res) => {
+const toNews = () => {
+  const cid = newcid;
+  router.push({ path: "/news", query: { cid } });
+};
+const getCategoryList = (id) => {
+  let params = {
+    page: 1,
+    limit: 6,
+    cid: id,
+  };
+  listApi(params).then((res) => {
     console.log(res);
+    categoryActiveList.value = res.data.data;
+  });
+};
+const sports = ref([]);
+onMounted(() => {
+  bannerApi().then((res) => {
+    if (res.code == 1) {
+      banner.value = res.data[0].image;
+    }
+  });
+  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+  newcid = activeMenu.child_list.find((item) => {
+    return item.name === "新闻中心";
+  })?.id;
+  categoryid = activeMenu.child_list.find((item) => {
+    return item.name === "中心动态";
+  })?.id;
+  sportid = activeMenu.child_list.find((item) => {
+    return item.name === "热门景点";
+  })?.id;
+  let params = {
+    page: 1,
+    limit: 6,
+    cid: newcid,
+  };
+  Promise.all([news.top(newcid), news.no_top_list(params)]).then((res) => {
+    if (res[0].code == 1 && res[1].code == 1) {
+      newsItems.value.top = res[0].data.data;
+      newsItems.value.list = res[1].data.data;
+    }
+  });
+  category(categoryid).then((res) => {
+    categorys.value = res.data;
+    categoryActive.value = categorys.value[0].id;
+    getCategoryList(categoryActive.value);
+  });
+  listApi({ page: 1, limit: 6, cid: sportid }).then((res) => {
+    console.log(res);
+    if (res.code == 1) {
+      sports.value = res.data.data;
+    }
   });
 });
 </script>
@@ -46,7 +97,7 @@ onMounted(() => {
 <template>
   <Header />
   <div class="banner">
-    <img src="../assets/image/home_header_back.webp" alt="" />
+    <img :src="banner" alt="" />
     <!-- Your code here -->
   </div>
   <div class="page-main">
@@ -54,7 +105,7 @@ onMounted(() => {
       <div class="news">
         <div class="title">
           <p class="text">新闻<span>资讯</span></p>
-          <button>查看更多 <img src="../assets/image/link.webp" alt="" /></button>
+          <button @click="toNews">查看更多 <img src="../assets/image/link.webp" alt="" /></button>
         </div>
         <div class="page-content section1">
           <div class="secton-left">
@@ -62,50 +113,24 @@ onMounted(() => {
               :modules="[Navigation, Pagination]"
               :slides-per-view="1"
               :space-between="0"
-              @swiper="onSwiper"
               pagination
-              @slideChange="onSlideChange"
             >
-              <swiper-slide>
-                <div class="swiper-cover">
-                  <img src="../assets/image/swiper.webp" alt="" />
-                  <p class="title">“共筑未来之桥”中阿建交40周年庆...</p>
-                </div>
-              </swiper-slide>
-              <swiper-slide>
-                <div class="swiper-cover">
-                  <img src="../assets/image/swiper.webp" alt="" />
+              <swiper-slide v-for="(item, index) in newsItems.top" :key="index">
+                <div
+                  class="swiper-cover"
+                  :style="`background: url(${item.image}) no-repeat center center;`"
+                >
+                  <img :src="item.image" alt="" />
+                  <p class="title">{{ item.title }}</p>
                 </div>
               </swiper-slide>
             </swiper>
           </div>
           <div class="section-right">
             <div class="items">
-              <div class="item">
-                <div class="title">建交40周年——见证中国与阿联酋务实合作</div>
-                <div class="time">2024 - 09 -11</div>
-              </div>
-              <div class="item">
-                <div class="title">建交40周年——见证中国与阿联酋务实合作</div>
-                <div class="time">2024 - 09 -11</div>
-              </div>
-              <div class="item">
-                <div class="title">建交40周年——见证中国与阿联酋务实合作</div>
-                <div class="time">2024 - 09 -11</div>
-              </div>
-              <div class="item">
-                <div class="title">建交40周年——见证中国与阿联酋务实合作</div>
-                <div class="time">2024 - 09 -11</div>
-              </div>
-
-              <div class="item">
-                <div class="title">建交40周年——见证中国与阿联酋务实合作</div>
-                <div class="time">2024 - 09 -11</div>
-              </div>
-
-              <div class="item">
-                <div class="title">建交40周年——见证中国与阿联酋务实合作</div>
-                <div class="time">2024 - 09 -11</div>
+              <div class="item" v-for="(item, index) in newsItems.list" :key="index">
+                <div class="title">{{ item.title }}</div>
+                <div class="time">{{ item.show_time }}</div>
               </div>
             </div>
           </div>
@@ -116,125 +141,35 @@ onMounted(() => {
       <div class="title">
         <div class="text">
           中心<span>动态</span>
-          <div class="item"></div>
+          <div class="item">
+            <div
+              class="tab"
+              v-for="item in categorys"
+              :key="item.id"
+              :class="{ active: item.id == categoryActive }"
+            >
+              {{ item.name }}
+            </div>
+          </div>
         </div>
         <button>查看更多 <img src="../assets/image/link2.webp" alt="" /></button>
       </div>
       <div class="page-items">
-        <div class="page-item">
+        <div class="page-item" v-for="(item, index) in categoryActiveList" :key="index">
           <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
+            <div
+              class="cover"
+              :style="`background: url(${item.image}) no-repeat center center;`"
+            >
+              <img :src="item.image" alt="" />
             </div>
             <div class="content">
-              <div class="time">2024 - 09 - 11</div>
+              <div class="time">{{ item.show_time }}</div>
               <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
+                {{ item.title }}
               </div>
               <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
+                {{ item.description }}
               </div>
             </div>
           </div>
@@ -251,19 +186,12 @@ onMounted(() => {
           :modules="[Navigation, Pagination]"
           :slides-per-view="1"
           :space-between="0"
-          @swiper="onSwiper"
           pagination
-          @slideChange="onSlideChange"
         >
-          <swiper-slide>
+          <swiper-slide v-for="(item, index) in sports" :key="index">
             <div class="swiper-cover">
-              <img src="../assets/image/swiper.webp" alt="" />
-              <p class="title">“共筑未来之桥”中阿建交40周年庆...</p>
-            </div>
-          </swiper-slide>
-          <swiper-slide>
-            <div class="swiper-cover">
-              <img src="../assets/image/swiper.webp" alt="" />
+              <img :src="item.image" alt="" />
+              <p class="title">{{ item.title }}</p>
             </div>
           </swiper-slide>
         </swiper>
@@ -349,7 +277,7 @@ section {
         bottom: 30px;
         font-family: Source Han Sans CN, Source Han Sans CN;
         font-weight: 500;
-        font-size: 22px;
+        font-size: 1.375rem;
         color: #ffffff;
         line-height: 26px;
         text-transform: none;
@@ -406,9 +334,41 @@ section {
 }
 .section2 {
   .title {
+    .text {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
     button {
       background: #ffffff;
       color: #b8aaa5;
+    }
+    .item {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-left: 50px;
+      .tab {
+        width: 107px;
+        height: 36px;
+        border-radius: 100px 100px 100px 100px;
+        font-weight: 400;
+        font-size: 1rem;
+        color: #333333;
+        line-height: 19px;
+        line-height: 36px;
+        text-align: center;
+        margin-right: 28px;
+        cursor: pointer;
+        &.active {
+          background: #b81c22;
+          color: #ffffff;
+        }
+        &:hover {
+          background: #b81c22;
+          color: #ffffff;
+        }
+      }
     }
   }
   .page-items {
@@ -427,7 +387,6 @@ section {
 
         .cover {
           width: 100%;
-          background: url("../assets/image/section2.webp") no-repeat center center;
           background-size: cover;
 
           img {
