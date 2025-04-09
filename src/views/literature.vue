@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import PageBanner from "@/layout/page-banner.vue";
 import Footer from "@/layout/footer.vue";
 import Pagination from "@/components/pagination.vue";
+import { listApi } from "@/api/list";
 // Your script here
 /**
  * 路由对象
@@ -13,10 +14,40 @@ const route = useRoute();
  * 路由实例
  */
 const router = useRouter();
+let cid = null;
+const pagelist = ref([]);
+const pagination = ref({
+  page: 1,
+  limit: 12,
+  total: 0,
+  last_page: 0,
+  onchange: (page) => {
+    pagination.value.page = page;
+    getList();
+  },
+});
 
 // 基础变量区域（通用性）
-
-// 基础函数区域（通用性）
+const getList = () => {
+  let parmaas = {
+    page: pagination.value.page,
+    limit: pagination.value.limit,
+    cid: cid,
+  };
+  listApi(parmaas).then((res) => {
+    console.log(res);
+    pagelist.value = res.data.data;
+    pagination.value.total = res.data.total;
+    pagination.value.last_page = res.data.last_page;
+  });
+};
+onMounted(() => {
+  // 获取路由参数
+  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+  console.log(activeMenu);
+  cid = activeMenu.id;
+  getList();
+});
 </script>
 
 <template>
@@ -24,43 +55,25 @@ const router = useRouter();
   <div class="page-main">
     <section class="">
       <div class="page-items">
-        <div class="page-item">
+        <div
+          class="page-item"
+          v-for="(item, index) in pagelist"
+          :key="index"
+          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+        >
           <div class="item">
-            <div class="cover">
-              <img src="../assets/image/literature.webp" alt="" />
+            <div
+              class="cover"
+              :style="`background: url(${item.image}) no-repeat center center;`"
+            >
+              <img :src="item.image" alt="" />
             </div>
             <div class="content">
-              <div class="title">《阿拉伯人》 阿文</div>
-              <div class="desc">
-                所谓“古埃及佛像”，前面陈大漓写过一篇比较精彩的，<继英国发现“吉姆在这里”之后，西方又一伪造被抓现行>，尤其印象深刻的是对于肉髻...
+              <div class="title">
+                {{ item.title }}
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/literature.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="title">《阿拉伯人》 阿文</div>
               <div class="desc">
-                所谓“古埃及佛像”，前面陈大漓写过一篇比较精彩的，<继英国发现“吉姆在这里”之后，西方又一伪造被抓现行>，尤其印象深刻的是对于肉髻...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/literature.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="title">《阿拉伯人》 阿文</div>
-              <div class="desc">
-                所谓“古埃及佛像”，前面陈大漓写过一篇比较精彩的，<继英国发现“吉姆在这里”之后，西方又一伪造被抓现行>，尤其印象深刻的是对于肉髻...
+                {{ item.description }}
               </div>
             </div>
           </div>
@@ -69,7 +82,7 @@ const router = useRouter();
     </section>
     <!-- Your code here -->
   </div>
-  <Pagination></Pagination>
+  <Pagination :pagination="pagination"></Pagination>
   <Footer></Footer>
 </template>
 
@@ -109,9 +122,10 @@ const router = useRouter();
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap;
-      margin-top: 46px; 
+      margin-top: 46px;
       margin-left: -20px;
       margin-right: -20px;
+      min-height: 400px;
 
       .page-item {
         width: 33%;
@@ -147,6 +161,9 @@ const router = useRouter();
             color: #000000;
             line-height: 28px;
             text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
           .desc {
             font-family: Source Han Sans CN, Source Han Sans CN;
@@ -155,6 +172,10 @@ const router = useRouter();
             color: #999999;
             line-height: 16px;
             text-align: left;
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
         }
       }

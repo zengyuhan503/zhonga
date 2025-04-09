@@ -4,6 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 import PageBanner from "@/layout/page-banner.vue";
 import Footer from "@/layout/footer.vue";
 import Pagination from "@/components/pagination.vue";
+import { bannerApi, original, category, listApi } from "@/api/list";
+import moment from "moment";
 // Your script here
 /**
  * 路由对象
@@ -13,10 +15,78 @@ const route = useRoute();
  * 路由实例
  */
 const router = useRouter();
+const sportid = ref(""); // 选中的tab
+const sportsList = ref({
+  top: [],
+  no_top: [],
+});
+
+const items2id = ref(""); // 选中的tab
+const items2list = ref({
+  top: [],
+  no_top: [],
+});
 
 // 基础变量区域（通用性）
-
+function splitIntoRowsOf3(arr) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += 3) {
+    const chunk = arr.slice(i, i + 3); // 每次取3个元素
+    result.push(chunk);
+  }
+  return result;
+}
 // 基础函数区域（通用性）
+onMounted(() => {
+  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+  sportid.value = activeMenu.child_list.find((item) => {
+    return item.name === "文旅宣传";
+  })?.id;
+
+  items2id.value = activeMenu.child_list.find((item) => {
+    return item.name === "人物访谈";
+  })?.id;
+
+  let params = {
+    page: 1,
+    limit: 6,
+    cid: sportid.value,
+  };
+  Promise.all([original.top(sportid.value), original.no_top_list(params)]).then((res) => {
+    if (res[0].code == 1 && res[1].code == 1) {
+      sportsList.value.top = res[0].data.data;
+      sportsList.value.top.forEach((item) => {
+        item.time = moment(item.show_time).format("YYYY-MM-DD");
+      });
+      sportsList.value.no_top = res[1].data.data;
+      sportsList.value.no_top.forEach((item) => {
+        item.time = moment(item.show_time).format("YYYY-MM-DD");
+      });
+    }
+  });
+
+  let params2 = {
+    page: 1,
+    limit: 6,
+    cid: items2id.value,
+  };
+  Promise.all([original.top(items2id.value), original.no_top_list(params2)]).then(
+    (res) => {
+      if (res[0].code == 1 && res[1].code == 1) {
+        items2list.value.top = res[0].data.data;
+        items2list.value.no_top = res[1].data.data;
+        items2list.value.no_top = splitIntoRowsOf3(items2list.value.no_top);
+        items2list.value.top.forEach((item) => {
+          item.time = moment(item.show_time).format("YYYY-MM-DD");
+        });
+        items2list.value.no_top.forEach((item) => {
+          item.time = moment(item.show_time).format("YYYY-MM-DD");
+        });
+        console.log(items2list.value.no_top);
+      }
+    }
+  );
+});
 </script>
 
 <template>
@@ -26,80 +96,31 @@ const router = useRouter();
     <section>
       <div class="sports">
         <div class="title">
-          <p class="text">新闻<span>资讯</span></p>
+          <p class="text">文旅<span>宣传</span></p>
           <button>查看更多 <img src="../assets/image/link.webp" alt="" /></button>
         </div>
         <div class="items1">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/academic.webp" alt="" />
+          <div class="item" v-for="(item, index) in sportsList.top" :key="index">
+            <div
+              class="cover"
+              :style="`background: url(${item.image}) no-repeat center center;`"
+            >
+              <img :src="item.image" alt="" />
             </div>
             <div class="content">
-              <div class="time">2023 - 10 -11</div>
-              <div class="title">友城相册丨马拉喀什市</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/academic.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2023 - 10 -11</div>
-              <div class="title">友城相册丨马拉喀什市</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/academic.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2023 - 10 -11</div>
-              <div class="title">友城相册丨马拉喀什市</div>
+              <div class="time">{{ item.time }}</div>
+              <div class="title">
+                {{ item.title }}
+              </div>
             </div>
           </div>
         </div>
         <div class="item2">
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
-          </div>
-
-          <div class="item">
-            <div class="time">2023 - 10 -11</div>
-            <div class="title">友城相册丨马拉喀什市</div>
+          <div class="item" v-for="(item, index) in sportsList.no_top" :key="index">
+            <div class="time">{{ item.time }}</div>
+            <div class="title">
+              {{ item.title }}
+            </div>
           </div>
         </div>
       </div>
@@ -111,86 +132,59 @@ const router = useRouter();
         <p class="text">人物<span>访谈</span></p>
         <button>查看更多 <img src="../assets/image/link.webp" alt="" /></button>
       </div>
-      <div class="item1">
+      <div class="item1" v-if="sportsList.no_top.length > 2">
         <div class="left">
-          <div class="cover">
-            <img src="../assets/image/academic2.webp" alt="" />
+          <div
+            class="cover"
+            :style="`background: url(${sportsList.no_top[0].image}) no-repeat center center;`"
+          >
+            <img :src="sportsList.no_top[0].image" alt="" />
           </div>
           <div class="content">
-            <div class="title">友城相册丨马拉喀什市</div>
+            <div class="title">{{ sportsList.no_top[0].title }}</div>
             <div class="desc">
-              常大使表示，在中沙两国领导人共同关心和战略引领下，双边各领域友好合作发展迅速...
+              {{ sportsList.no_top[0].description }}
             </div>
           </div>
         </div>
         <div class="right">
           <div class="item">
-            <div class="cover">
-              <img src="../assets/image/academic1.webp" alt="" />
+            <div
+              class="cover"
+              :style="`background: url(${sportsList.no_top[1].image}) no-repeat center center;`"
+            >
+              <img :src="sportsList.no_top[1].image" alt="" />
             </div>
             <div class="content">
-              <div class="time">2023 - 10 -11</div>
-              <div class="title">友城相册丨马拉喀什市</div>
+              <div class="time">{{ sportsList.no_top[1].time }}</div>
+              <div class="title">{{ sportsList.no_top[1].title }}</div>
               <div class="desc">
-                常大使表示，在中沙两国领导人共同关心和战略引领下，双边各领域友好合作发展迅速...
+                {{ sportsList.no_top[1].description }}
               </div>
             </div>
           </div>
           <div class="item">
-            <div class="cover">
-              <img src="../assets/image/academic1.webp" alt="" />
+            <div
+              class="cover"
+              :style="`background: url(${sportsList.no_top[2].image}) no-repeat center center;`"
+            >
+              <img :src="sportsList.no_top[1].image" alt="" />
             </div>
             <div class="content">
-              <div class="time">2023 - 10 -11</div>
-              <div class="title">友城相册丨马拉喀什市</div>
+              <div class="time">{{ sportsList.no_top[2].time }}</div>
+              <div class="title">{{ sportsList.no_top[2].title }}</div>
               <div class="desc">
-                常大使表示，在中沙两国领导人共同关心和战略引领下，双边各领域友好合作发展迅速...
+                {{ sportsList.no_top[2].description }}
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="item2">
-        <div class="item">
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
-          </div>
-          <div class="node">
-            <div class="title">埃及中东社专访驻埃及大使廖力强</div>
-            <div class="time">2023 - 10 -11</div>
+        <div class="item" v-for="(item, index) in items2list.no_top" :key="index">
+          <div class="node" v-for="node in item" :key="index">
+            <div class="title">{{ node.title }}</div>
+            <div class="time">{{ node.time }}</div>
           </div>
         </div>
       </div>
@@ -364,6 +358,9 @@ const router = useRouter();
       .left {
         width: 50%;
         position: relative;
+        border-radius: 25px;
+        overflow: hidden;
+
         .cover {
           width: 100%;
           img {
@@ -457,7 +454,6 @@ const router = useRouter();
       margin-top: 40px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
       .item {
         width: 32%;
         box-sizing: border-box;

@@ -41,6 +41,22 @@ const toNews = () => {
   const cid = newcid;
   router.push({ path: "/news", query: { cid } });
 };
+const toNewsDetail = (id) => {
+  router.push({ path: "/newsDetail", query: { id } });
+};
+const toCategory = () => {
+  const cid = categoryid;
+  router.push({ path: "/academic", query: { cid } });
+};
+const toSpots = () => {
+  const cid = sportid;
+  router.push({ path: "/scenicspot", query: { cid } });
+};
+
+const changeCategory = (id) => {
+  categoryActive.value = id;
+  getCategoryList(id);
+};
 const getCategoryList = (id) => {
   let params = {
     page: 1,
@@ -105,7 +121,9 @@ onMounted(() => {
       <div class="news">
         <div class="title">
           <p class="text">新闻<span>资讯</span></p>
-          <button @click="toNews">查看更多 <img src="../assets/image/link.webp" alt="" /></button>
+          <button @click="toNews">
+            查看更多 <img src="../assets/image/link.webp" alt="" />
+          </button>
         </div>
         <div class="page-content section1">
           <div class="secton-left">
@@ -117,6 +135,7 @@ onMounted(() => {
             >
               <swiper-slide v-for="(item, index) in newsItems.top" :key="index">
                 <div
+                  @click="toNewsDetail(item.id)"
                   class="swiper-cover"
                   :style="`background: url(${item.image}) no-repeat center center;`"
                 >
@@ -128,7 +147,12 @@ onMounted(() => {
           </div>
           <div class="section-right">
             <div class="items">
-              <div class="item" v-for="(item, index) in newsItems.list" :key="index">
+              <div
+                class="item"
+                v-for="(item, index) in newsItems.list"
+                :key="index"
+                @click="toNewsDetail(item.id)"
+              >
                 <div class="title">{{ item.title }}</div>
                 <div class="time">{{ item.show_time }}</div>
               </div>
@@ -147,15 +171,23 @@ onMounted(() => {
               v-for="item in categorys"
               :key="item.id"
               :class="{ active: item.id == categoryActive }"
+              @click="changeCategory(item.id)"
             >
               {{ item.name }}
             </div>
           </div>
         </div>
-        <button>查看更多 <img src="../assets/image/link2.webp" alt="" /></button>
+        <button @click="toCategory()">
+          查看更多 <img src="../assets/image/link2.webp" alt="" />
+        </button>
       </div>
       <div class="page-items">
-        <div class="page-item" v-for="(item, index) in categoryActiveList" :key="index">
+        <div
+          class="page-item"
+          v-for="(item, index) in categoryActiveList"
+          :key="index"
+          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+        >
           <div class="item">
             <div
               class="cover"
@@ -179,7 +211,9 @@ onMounted(() => {
     <section class="section3">
       <div class="title">
         <p class="text">热门<span>景点</span></p>
-        <button>查看更多 <img src="../assets/image/link.webp" alt="" /></button>
+        <button @click="toSpots">
+          查看更多 <img src="../assets/image/link.webp" alt="" />
+        </button>
       </div>
       <div class="page-content">
         <swiper
@@ -188,8 +222,15 @@ onMounted(() => {
           :space-between="0"
           pagination
         >
-          <swiper-slide v-for="(item, index) in sports" :key="index">
-            <div class="swiper-cover">
+          <swiper-slide
+            v-for="(item, index) in sports"
+            :key="index"
+            @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+          >
+            <div
+              class="swiper-cover"
+              :style="`background: url(${item.image}) no-repeat center center;`"
+            >
               <img :src="item.image" alt="" />
               <p class="title">{{ item.title }}</p>
             </div>
@@ -263,7 +304,6 @@ section {
       width: 48%;
     }
     .swiper-cover {
-      background: url("../assets/image/swiper.webp") no-repeat center center;
       background-size: cover;
       border-radius: 25px;
       overflow: hidden;

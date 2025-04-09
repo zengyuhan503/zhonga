@@ -59,7 +59,12 @@ onMounted(() => {
         <span>新闻资讯</span>
       </div>
       <div class="page-items">
-        <div class="page-item" v-for="(item, index) in news" :key="index">
+        <div
+          class="page-item"
+          v-for="(item, index) in news"
+          :key="index"
+          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+        >
           <div class="cover">
             <img :src="item.image" alt="" />
           </div>
@@ -71,7 +76,9 @@ onMounted(() => {
               {{ item.description }}
             </div>
           </div>
-          <div class="time">2023 - 10 -11</div>
+          <div class="time">
+            {{ item.show_time }}
+          </div>
         </div>
       </div>
     </section>

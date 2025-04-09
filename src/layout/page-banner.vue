@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { menu } from "@/api/list";
 // Your script here
 /**
  * 路由对象
@@ -22,12 +23,28 @@ const langs = ref([
     active: false,
   },
 ]);
-
 const changeLang = (index) => {
   langs.value.forEach((item, i) => {
     item.active = i === index;
   });
 };
+const menuList = ref([]); // 菜单列表
+const activeMenu = ref({}); // 当前选中的菜单
+onMounted(() => {
+  // 获取路由参数
+  menu().then((res) => {
+    if (res.code === 1) {
+      menuList.value = res.data;
+      localStorage.setItem("menuList", JSON.stringify(res.data));
+      menuList.value.forEach((item) => {
+        if (item.urlname === route.path) {
+          activeMenu.value = item;
+          localStorage.setItem("activeMenu", JSON.stringify(item));
+        }
+      });
+    }
+  });
+});
 </script>
 
 <template>
@@ -41,29 +58,17 @@ const changeLang = (index) => {
               <img src="../assets/image/logo.png" alt=""
             /></router-link>
           </div>
+
           <div class="navs-list">
-            <div class="item active">
-              <router-link to="/">首页</router-link>
+            <div
+              class="item"
+              v-for="(item, index) in menuList"
+              :key="index"
+              :class="{ active: route.path === item.urlname }"
+            >
+              <router-link :to="item.urlname">{{ item.name }}</router-link>
             </div>
-            <div class="item">
-              <router-link to="/original">中心原创</router-link>
-            </div>
-            <div class="item">
-              <router-link to="/academic2">学术中心</router-link>
-            </div>
-            <div class="item">
-              <router-link to="/literature">文献中心</router-link>
-            </div>
-            <div class="item">
-              <router-link to="/culturaltravel">文旅动态</router-link>
-            </div>
-            <div class="item">
-              <router-link to="/talents">人才发展</router-link>
-            </div>
-            <div class="item">
-              <router-link to="/partner">产业合作</router-link>
-            </div>
-            <div class="langs">
+            <!-- <div class="langs">
               <span
                 :class="{ active: item.active }"
                 v-for="(item, index) in langs"
@@ -71,7 +76,7 @@ const changeLang = (index) => {
                 @click="changeLang(index)"
                 >{{ item.name }}</span
               >
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

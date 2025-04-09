@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import PageBanner from "@/layout/page-banner.vue";
 import Footer from "@/layout/footer.vue";
 import Pagination from "@/components/pagination.vue";
+import { listApi } from "@/api/list";
 // Your script here
 /**
  * 路由对象
@@ -13,10 +14,39 @@ const route = useRoute();
  * 路由实例
  */
 const router = useRouter();
-
+const sports = ref([]);
 // 基础变量区域（通用性）
 
+const pagination = ref({
+  page: 1,
+  limit: 12,
+  total: 0,
+  last_page: 0,
+  onchange: (page) => {
+    console.log(page);
+    pagination.value.page = page;
+    getSpots();
+  },
+});
 // 基础函数区域（通用性）
+const getSpots = () => {
+  let params = {
+    page: pagination.value.page,
+    limit: pagination.value.limit,
+    cid: route.query.id,
+  };
+  listApi(params).then((res) => {
+    console.log(res);
+    if (res.code == 1) {
+      sports.value = res.data.data;
+      pagination.value.total = res.data.total;
+      pagination.value.last_page = res.data.last_page;
+    }
+  });
+};
+onMounted(() => {
+  getSpots();
+});
 </script>
 
 <template>
@@ -24,51 +54,29 @@ const router = useRouter();
   <div class="page-main">
     <section class="">
       <div class="page-items">
-        <div class="page-item">
+        <div
+          class="page-item"
+          v-for="(item, index) in sports"
+          :key="index"
+          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+        >
           <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section3.webp" alt="" />
+            <div
+              class="cover"
+              :style="`background: url(${item.image}) no-repeat center center;`"
+            >
+              <img :src="item.image" alt="" />
             </div>
-            <div class="title">北京·长城</div>
-          </div>
-        </div>
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section3.webp" alt="" />
+            <div class="title">
+              {{ item.title }}
             </div>
-            <div class="title">北京·长城</div>
-          </div>
-        </div>
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section3.webp" alt="" />
-            </div>
-            <div class="title">北京·长城</div>
-          </div>
-        </div>
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section3.webp" alt="" />
-            </div>
-            <div class="title">北京·长城</div>
-          </div>
-        </div>
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section3.webp" alt="" />
-            </div>
-            <div class="title">北京·长城</div>
           </div>
         </div>
       </div>
     </section>
     <!-- Your code here -->
   </div>
-  <Pagination></Pagination>
+  <Pagination :pagination="pagination"></Pagination>
   <Footer></Footer>
 </template>
 

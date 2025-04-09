@@ -27,3 +27,15 @@ export const listApi = (params) => {
 export const pagedetailApi = (id) => {
     return get(`/addons/ldcms/api.v1/detail?id=${id}`)
 }
+export const up_down_list = (id) => {
+    return get(`/addons/ldcms/api.v1/up_down_list?id=${id}`)
+}
+export const pagecontent = (cid) => {
+    return get(`/addons/ldcms/api.v1/content?cid=${cid}`)
+}
+
+export const original = {
+    top: (cid) => get(`/addons/ldcms/api.v1/lists?cid=${cid}&page=1&limit=3&last_page=1&flag=top`),
+    no_top_list: (params) => get(`/addons/ldcms/api.v1/not_top?cid=${params.cid}&page=${params.page}&limit=${params.limit}&last_page=1`),
+}
+// https://ccctcorg.cn/addons/ldcms/api.v1/content?cid=181

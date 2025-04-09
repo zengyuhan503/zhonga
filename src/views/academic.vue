@@ -4,6 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 import PageBanner from "@/layout/page-banner.vue";
 import Footer from "@/layout/footer.vue";
 import Pagination from "@/components/pagination.vue";
+import { category, listApi } from "@/api/list";
+
 // Your script here
 /**
  * 路由对象
@@ -13,16 +15,58 @@ const route = useRoute();
  * 路由实例
  */
 const router = useRouter();
-const tabactive = ref("tab1"); // 选中的tab
-const tabs = ref([
-  { name: "学术内容", active: "tab1" },
-  { name: "会议活动", active: "tab2" },
-  { name: "中心交往", active: "tab3" },
-]);
+let categoryid;
+const categorys = ref([]);
+const categoryActive = ref(""); // 选中的tab
+const categoryActiveList = ref([]); // 选中的tab列表
 
+const pagination = ref({
+  page: 1,
+  limit: 6,
+  total: 0,
+  last_page: 0,
+  onchange: (page) => {
+    console.log(page);
+    pagination.value.page = page;
+    getCategoryList();
+  },
+});
 // 基础变量区域（通用性）
 
+const changeCategory = (id) => {
+  categoryActive.value = id;
+  getCategoryList();
+};
+const getCategoryList = () => {
+  let params = {
+    page: pagination.value.page,
+    limit: pagination.value.limit,
+    cid: categoryActive.value,
+  };
+  listApi(params).then((res) => {
+    console.log(res);
+    categoryActiveList.value = res.data.data;
+    pagination.value.total = res.data.total;
+    pagination.value.last_page = res.data.last_page;
+  });
+};
+
 // 基础函数区域（通用性）
+onMounted(() => {
+  // 获取路由参数
+
+  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+
+  categoryid = activeMenu.child_list.find((item) => {
+    return item.name === "中心动态";
+  })?.id;
+
+  category(categoryid).then((res) => {
+    categorys.value = res.data;
+    categoryActive.value = categorys.value[0].id;
+    getCategoryList();
+  });
+});
 </script>
 
 <template>
@@ -31,10 +75,10 @@ const tabs = ref([
     <div class="page-tab">
       <div
         class="tab"
-        v-for="(tab, index) in tabs"
+        v-for="(tab, index) in categorys"
         :key="index"
-        :class="{ active: tabactive === tab.active }"
-        @click="tabactive = tab.active"
+        :class="{ active: categoryActive === tab.id }"
+        @click="changeCategory(tab.id)"
       >
         {{ tab.name }}
       </div>
@@ -50,120 +94,26 @@ const tabs = ref([
         <span>学术内容</span>
       </div>
       <div class="page-items">
-        <div class="page-item">
+        <div
+          class="page-item"
+          v-for="(item, index) in categoryActiveList"
+          :key="index"
+          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+        >
           <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
+            <div
+              class="cover"
+              :style="`background: url(${item.image}) no-repeat center center;`"
+            >
+              <img :src="item.image" alt="" />
             </div>
             <div class="content">
-              <div class="time">2024 - 09 - 11</div>
+              <div class="time">{{ item.show_time }}</div>
               <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
+                {{ item.title }}
               </div>
               <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-item">
-          <div class="item">
-            <div class="cover">
-              <img src="../assets/image/section2.webp" alt="" />
-            </div>
-            <div class="content">
-              <div class="time">2024 - 09 - 11</div>
-              <div class="title">
-                阿尔及利亚医生远赴中国求学：要为撒哈拉沙漠众多眼病患者带去光明
-              </div>
-              <div class="desc">
-                10月10日，四川南骏汽车集团与俄罗斯斯玛特汽车公司签订战略合作协议，选定5款南骏商用车产品开启合作，为共建“一带一路”注入新动力...
+                {{ item.description }}
               </div>
             </div>
           </div>
@@ -172,7 +122,7 @@ const tabs = ref([
     </section>
     <!-- Your code here -->
   </div>
-  <Pagination></Pagination>
+  <Pagination :pagination="pagination"></Pagination>
   <Footer></Footer>
 </template>
 
@@ -238,6 +188,7 @@ const tabs = ref([
       margin-top: 46px;
       margin-left: -20px;
       margin-right: -20px;
+      min-height: 400px;
 
       .page-item {
         width: 25%;
@@ -254,7 +205,7 @@ const tabs = ref([
 
           .cover {
             width: 100%;
-            background: url("../assets/image/section2.webp") no-repeat center center;
+
             background-size: cover;
 
             img {

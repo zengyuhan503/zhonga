@@ -19,7 +19,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="pagination">
+  <div class="pagination" v-show="props.pagination.last_page > 0">
     <!-- Your code here -->
     <div class="pagination-home pagebtn">
       <button>首页</button>

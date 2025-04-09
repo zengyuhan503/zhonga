@@ -63,7 +63,7 @@ onMounted(() => {
           >
             <router-link :to="item.urlname">{{ item.name }}</router-link>
           </div>
-          <div class="langs">
+          <!-- <div class="langs">
             <span
               :class="{ active: item.active }"
               v-for="(item, index) in langs"
@@ -71,7 +71,7 @@ onMounted(() => {
               @click="changeLang(index)"
               >{{ item.name }}</span
             >
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
