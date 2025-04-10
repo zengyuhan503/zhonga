@@ -94,7 +94,7 @@ onMounted(() => {
               class="cover"
               :style="`background: url(${item.image}) no-repeat center center;`"
             >
-              <img :src="item.image" alt="" />
+              <img src="../assets/image/academic2.webp" alt="" />
             </div>
             <div class="content">
               <div class="time">{{ item.show_time }}</div>
@@ -191,10 +191,10 @@ onMounted(() => {
           background: #fff9f9;
           border-radius: 28px;
           width: 100%;
+          overflow: hidden;
 
           .cover {
             width: 100%;
-            background: url("../assets/image/section2.webp") no-repeat center center;
             background-size: cover;
 
             img {

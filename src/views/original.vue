@@ -105,7 +105,7 @@ onMounted(() => {
               class="cover"
               :style="`background: url(${item.image}) no-repeat center center;`"
             >
-              <img :src="item.image" alt="" />
+              <img src="../assets/image/academic.webp" alt="" />
             </div>
             <div class="content">
               <div class="time">{{ item.time }}</div>
@@ -153,7 +153,7 @@ onMounted(() => {
               class="cover"
               :style="`background: url(${sportsList.no_top[1].image}) no-repeat center center;`"
             >
-              <img :src="sportsList.no_top[1].image" alt="" />
+              <img src="../assets/image/academic1.webp" alt="" />
             </div>
             <div class="content">
               <div class="time">{{ sportsList.no_top[1].time }}</div>
@@ -166,9 +166,9 @@ onMounted(() => {
           <div class="item">
             <div
               class="cover"
-              :style="`background: url(${sportsList.no_top[2].image}) no-repeat center center;`"
+              :style="`background: url(${sportsList.no_top[2].image}) no-repeat `"
             >
-              <img :src="sportsList.no_top[1].image" alt="" />
+              <img src="../assets/image/academic1.webp" alt="" />
             </div>
             <div class="content">
               <div class="time">{{ sportsList.no_top[2].time }}</div>
@@ -246,6 +246,7 @@ onMounted(() => {
           img {
             width: 100%;
             display: block;
+            opacity: 0;
           }
         }
         .content {
@@ -270,6 +271,10 @@ onMounted(() => {
             font-style: normal;
             text-transform: none;
             margin-top: 10px;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
       }
@@ -305,6 +310,10 @@ onMounted(() => {
           color: #111111;
           line-height: 40px;
           text-align: left;
+
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     }
@@ -412,10 +421,13 @@ onMounted(() => {
           align-items: center;
 
           .cover {
-            width: 30%;
+            width: 25%;
+            background-size: cover;
+            border-radius: 25px;
             img {
               width: 100%;
               display: block;
+              opacity: 0;
             }
           }
           .content {
@@ -437,6 +449,11 @@ onMounted(() => {
               line-height: 31px;
               text-align: left;
               margin: 10px 0;
+
+              display: -webkit-box;
+              overflow: hidden;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
             }
             .desc {
               font-family: Source Han Sans CN, Source Han Sans CN;
@@ -445,6 +462,11 @@ onMounted(() => {
               color: #999999;
               line-height: 24px;
               text-align: left;
+
+              display: -webkit-box;
+              overflow: hidden;
+              -webkit-line-clamp: 3;
+              -webkit-box-orient: vertical;
             }
           }
         }
@@ -487,7 +509,7 @@ onMounted(() => {
               margin-right: 10px;
               position: relative;
               top: -2px;
-              left: -5px;
+              left: 0px;
             }
           }
           .time {

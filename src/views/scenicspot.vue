@@ -131,10 +131,9 @@ onMounted(() => {
         div.item {
           border-radius: 28px;
           width: 100%;
+          overflow: hidden;
           .cover {
             width: 100%;
-            border-radius: 28px;
-            overflow: hidden;
             img {
               width: 100%;
             }

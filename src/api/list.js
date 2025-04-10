@@ -1,8 +1,7 @@
 import axios from "axios";
-
 const get = async (url, params = null) => {
     return new Promise((resolve, reject) => {
-        axios.get(url, { params })
+        axios.get("https://web.ccctcorg.cn"+url, { params })
             .then(response => {
                 resolve(response.data);
             })

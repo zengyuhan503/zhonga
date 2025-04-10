@@ -19,7 +19,7 @@ export default defineConfig({
     host: true,
     proxy: {
       "/addons": {
-        target: "https://ccctcorg.cn",
+        target: "https://web.ccctcorg.cn/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/addons/, '/addons')
       }

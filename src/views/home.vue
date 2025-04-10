@@ -42,7 +42,7 @@ const toNews = () => {
   router.push({ path: "/news", query: { cid } });
 };
 const toNewsDetail = (id) => {
-  router.push({ path: "/newsDetail", query: { id } });
+  router.push({ path: "/pageDateil", query: { id } });
 };
 const toCategory = () => {
   const cid = categoryid;
@@ -135,11 +135,10 @@ onMounted(() => {
             >
               <swiper-slide v-for="(item, index) in newsItems.top" :key="index">
                 <div
-                  @click="toNewsDetail(item.id)"
                   class="swiper-cover"
                   :style="`background: url(${item.image}) no-repeat center center;`"
                 >
-                  <img :src="item.image" alt="" />
+                  <img src="../assets/image/swiper.webp" alt="" />
                   <p class="title">{{ item.title }}</p>
                 </div>
               </swiper-slide>
@@ -193,7 +192,7 @@ onMounted(() => {
               class="cover"
               :style="`background: url(${item.image}) no-repeat center center;`"
             >
-              <img :src="item.image" alt="" />
+              <img src="../assets/image/section2.webp" alt="" />
             </div>
             <div class="content">
               <div class="time">{{ item.show_time }}</div>
@@ -339,6 +338,7 @@ section {
           justify-content: space-between;
           align-items: center;
           padding: 25px 0;
+          cursor: pointer;
 
           &::before {
             content: "";
@@ -359,6 +359,10 @@ section {
             font-size: 1.25rem;
             color: #111111;
             line-height: 23px;
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
           }
           .time {
             font-family: Alibaba PuHuiTi 3, Alibaba PuHuiTi 30;
@@ -424,6 +428,7 @@ section {
       div.item {
         background: #fff9f9;
         border-radius: 28px;
+        overflow: hidden;
 
         .cover {
           width: 100%;
@@ -453,7 +458,7 @@ section {
             margin: 10px 0;
             display: -webkit-box;
             overflow: hidden;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
           }
           .desc {

@@ -202,6 +202,7 @@ onMounted(() => {
           background: #fff9f9;
           border-radius: 28px;
           width: 100%;
+          overflow: hidden;
 
           .cover {
             width: 100%;

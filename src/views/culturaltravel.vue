@@ -90,7 +90,7 @@ onMounted(() => {
               class="cover"
               :style="`background: url(${item.image}) no-repeat center center;`"
             >
-              <img :src="item.image" alt="" />
+              <img src="../assets/image/academic2.webp" alt="" />
             </div>
             <div class="content">
               <div class="time">{{ item.show_time }}</div>
@@ -164,7 +164,7 @@ onMounted(() => {
 
       .page-item {
         width: 25%;
-        margin-bottom: 43px;
+        margin-bottom: 13px;
         cursor: pointer;
         padding-left: 1%;
         padding-right: 10px;
@@ -174,10 +174,9 @@ onMounted(() => {
         div.item {
           border-radius: 28px;
           width: 100%;
-
+          overflow: hidden;
           .cover {
             width: 100%;
-            background: url("../assets/image/section2.webp") no-repeat center center;
             background-size: cover;
 
             img {
@@ -187,7 +186,7 @@ onMounted(() => {
             }
           }
           .content {
-            padding: 10px 5px;
+            padding: 20px;
             .time {
               font-family: Arial, Arial;
               font-weight: 400;
@@ -204,7 +203,7 @@ onMounted(() => {
               margin: 10px 0;
               display: -webkit-box;
               overflow: hidden;
-              -webkit-line-clamp: 2;
+              -webkit-line-clamp: 1;
               -webkit-box-orient: vertical;
             }
             .desc {
