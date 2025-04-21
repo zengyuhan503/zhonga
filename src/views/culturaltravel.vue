@@ -239,4 +239,31 @@ onMounted(() => {
     }
   }
 }
+
+@media screen and (max-width: 700px) {
+  .page-main section {
+    width: 100%;
+    padding: 0 26px;
+    .page-items {
+      .page-item {
+        width: 100%;
+        margin-bottom: 20px;
+        div.item {
+          .content {
+            padding: 10px;
+            .title {
+              font-size: 1.125rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .page-main .page-tab .tab {
+    font-size: 0.75rem;
+    padding: 5px;
+    text-align: center;
+  }
+}
 </style>

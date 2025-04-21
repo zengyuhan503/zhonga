@@ -92,7 +92,6 @@ onMounted(() => {
 <template>
   <PageBanner></PageBanner>
   <div class="page-main">
-    <!-- Your code here -->
     <section>
       <div class="sports">
         <div class="title">
@@ -126,7 +125,7 @@ onMounted(() => {
       </div>
     </section>
   </div>
-  <div class="interviews">
+  <!--<div class="interviews">
     <section>
       <div class="title">
         <p class="text">人物<span>访谈</span></p>
@@ -190,7 +189,7 @@ onMounted(() => {
       </div>
     </section>
   </div>
-  <Footer></Footer>
+  <Footer></Footer> -->
 </template>
 
 <style lang="less" scoped>
@@ -521,6 +520,21 @@ onMounted(() => {
             line-height: 16px;
             text-align: left;
           }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 700px) {
+  .page-main section {
+    width: 100%;
+    padding: 0 26px;
+    .sports {
+      & > .title {
+        .text {
+          font-size: 1.25rem;
+        }
+        button {
         }
       }
     }

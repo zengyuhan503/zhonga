@@ -30,6 +30,12 @@ const changeLang = (index) => {
 };
 const menuList = ref([]); // 菜单列表
 const activeMenu = ref({}); // 当前选中的菜单
+
+const isshowMobule = ref(false);
+
+const switchMobileNavs = () => {
+  isshowMobule.value = !isshowMobule.value;
+};
 onMounted(() => {
   // 获取路由参数
   menu().then((res) => {
@@ -49,7 +55,6 @@ onMounted(() => {
 
 <template>
   <div class="section-header">
-    <img src="../assets/image/header-back2.webp" alt="" />
     <div class="header">
       <div class="navs">
         <div class="nav">
@@ -58,7 +63,9 @@ onMounted(() => {
               <img src="../assets/image/logo.png" alt=""
             /></router-link>
           </div>
-
+          <div class="menu">
+            <img @click="switchMobileNavs" src="../assets/image/menu.png" alt="" />
+          </div>
           <div class="navs-list">
             <div
               class="item"
@@ -68,20 +75,26 @@ onMounted(() => {
             >
               <router-link :to="item.urlname">{{ item.name }}</router-link>
             </div>
-            <!-- <div class="langs">
-              <span
-                :class="{ active: item.active }"
-                v-for="(item, index) in langs"
-                :key="index"
-                @click="changeLang(index)"
-                >{{ item.name }}</span
-              >
-            </div> -->
+          </div>
+          <div class="mobile-navs" v-show="isshowMobule">
+            <div
+              class="item"
+              v-for="(item, index) in menuList"
+              :key="index"
+              :class="{ active: route.path === item.urlname }"
+            >
+              <router-link :to="item.urlname">
+                {{ item.name }}
+                <img src="../assets/image/link.webp" alt="" />
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
       <!-- Your code here -->
     </div>
+
+    <img src="../assets/image/header-back2.webp" alt="" />
     <!-- Your code here -->
     <div class="banner-text">
       <p>{{ route.name }}</p>
@@ -186,6 +199,76 @@ onMounted(() => {
           &.active {
             color: #e31b1b;
             background: #ffffff;
+          }
+        }
+      }
+    }
+  }
+  .menu {
+    display: none;
+    img {
+      width: 30px;
+    }
+  }
+  .mobile-navs {
+    display: none;
+  }
+}
+@media screen and (max-width: 700px) {
+  div {
+    font-size: 12px;
+  }
+  .section-header {
+    & > img {
+      height: 300px;
+    }
+    .banner-text {
+      p {
+        font-size: 2rem;
+      }
+    }
+  }
+  .header {
+  }
+  .header {
+    .nav {
+      padding: 0 20px;
+      .logo {
+        img {
+        }
+      }
+      .navs-list {
+        display: none;
+      }
+      .menu {
+        display: block;
+        img {
+          width: 30px;
+        }
+      }
+      .mobile-navs {
+        display: block;
+        position: fixed;
+        width: 100%;
+        height: calc(100vh - 77px);
+        top: 77px;
+        left: 0;
+        background: url(/src/assets/image/home_header_back.webp) no-repeat;
+        z-index: 10;
+        background-size: cover;
+        background-position: 62%;
+        .item {
+          a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            font-weight: 400;
+            padding: 12px 35px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            img {
+              width: 12px;
+            }
           }
         }
       }

@@ -7,12 +7,15 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import Header from "../layout/header.vue";
 import Footer from "@/layout/footer.vue";
 import { bannerApi, news, category, listApi } from "@/api/list";
+import { useI18n } from "vue-i18n";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+
+const { t, locale } = useI18n();
 
 // Your script here
 /**
@@ -77,7 +80,7 @@ onMounted(() => {
   });
   let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   newcid = activeMenu.child_list.find((item) => {
-    return item.name === "新闻中心";
+    return item.name === t("nav_newsCenter");
   })?.id;
   categoryid = activeMenu.child_list.find((item) => {
     return item.name === "中心动态";
@@ -120,9 +123,11 @@ onMounted(() => {
     <section>
       <div class="news">
         <div class="title">
-          <p class="text">新闻<span>资讯</span></p>
+          <p class="text">
+            {{ $t("news[0]") }}<span>{{ $t("news[1]") }}</span>
+          </p>
           <button @click="toNews">
-            查看更多 <img src="../assets/image/link.webp" alt="" />
+            {{ $t("page_more") }} <img src="../assets/image/link.webp" alt="" />
           </button>
         </div>
         <div class="page-content section1">
@@ -163,7 +168,7 @@ onMounted(() => {
     <section class="section2">
       <div class="title">
         <div class="text">
-          中心<span>动态</span>
+          {{ $t("central[0]") }} <span> {{ $t("central[1]") }}</span>
           <div class="item">
             <div
               class="tab"
@@ -177,7 +182,7 @@ onMounted(() => {
           </div>
         </div>
         <button @click="toCategory()">
-          查看更多 <img src="../assets/image/link2.webp" alt="" />
+          {{ $t("page_more") }} <img src="../assets/image/link2.webp" alt="" />
         </button>
       </div>
       <div class="page-items">
@@ -209,9 +214,11 @@ onMounted(() => {
     </section>
     <section class="section3">
       <div class="title">
-        <p class="text">热门<span>景点</span></p>
+        <p class="text">
+          {{ $t("sport[0]") }}<span>{{ $t("sport[1]") }}</span>
+        </p>
         <button @click="toSpots">
-          查看更多 <img src="../assets/image/link.webp" alt="" />
+          {{ $t("page_more") }} <img src="../assets/image/link.webp" alt="" />
         </button>
       </div>
       <div class="page-content">
@@ -506,6 +513,75 @@ section {
         width: 100%;
         display: block;
         opacity: 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 700px) {
+  section {
+    width: 100%;
+    padding: 0 25px;
+    box-sizing: border-box;
+    .title {
+      .text {
+        font-size: 1.5rem;
+      }
+    }
+    .page-content {
+      display: block;
+      .secton-left {
+        width: 100%;
+      }
+
+      .swiper-cover {
+        .title {
+          font-size: 0.8rem;
+        }
+      }
+      .section-right {
+        margin-top: 20px;
+        padding-left: 0%;
+        width: 100%;
+        .items {
+          .item {
+            padding: 10px 0;
+            &::before {
+              display: none;
+            }
+            .title {
+              width: 60%;
+              font-size: 0.8rem;
+            }
+            .time {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+  }
+  .section2 {
+    .title {
+      .item {
+        display: none;
+      }
+    }
+    .page-items {
+      width: 100%;
+      .page-item {
+        width: 100%;
+        div.item {
+          .content {
+            padding: 10px;
+            .title {
+              font-size: 1rem;
+            }
+            .desc {
+              font-size: 0.8rem;
+            }
+          }
+        }
       }
     }
   }

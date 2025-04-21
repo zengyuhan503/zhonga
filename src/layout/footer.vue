@@ -25,13 +25,13 @@ const router = useRouter();
         </div>
         <div class="text">
           <div>
-            <p>地址：北京市朝阳区定福庄南里1号院</p>
-            <p>电话：010-64888888</p>
-            <p>邮箱：ccctc@bisu.cn</p>
+            <p>{{ $t("footer_address") }}</p>
+            <p>{{ $t("footer_tel") }}</p>
+            <p>{{ $t("footer_email") }}</p>
           </div>
           <div>
-            <p>主办单位：文化旅游部 北京市人民政府</p>
-            <p>承办单位：北京市第二外国语学院</p>
+            <p>{{ $t("footer_organizer") }}</p>
+            <p>{{ $t("footer_undertaker") }}</p>
           </div>
         </div>
       </div>
@@ -93,6 +93,36 @@ const router = useRouter();
     img {
       width: 100%;
       display: block;
+    }
+  }
+}
+@media screen and (max-width: 700px) {
+  .footer {
+    .left {
+      display: block;
+      text-align: center;
+      .qcode {
+        margin: 0 auto;
+        margin-bottom: 20px;
+      }
+    }
+    .footer-content {
+      width: 100%;
+      padding: 32px 16px;
+      display: block;
+      .text {
+        width: 100%;
+        display: block;
+        p {
+          word-break: break-all;
+        }
+      }
+    }
+    .logo {
+      margin-top: 20px;
+      width: 50%;
+      text-align: center;
+      margin: 20px auto 0;
     }
   }
 }
