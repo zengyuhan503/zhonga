@@ -14,7 +14,7 @@ let i18n = createI18n({
     fallbackLocale: 'zh',
     messages: {
         zh: zh,
-        en: ar
+        ar: ar
     }
 })
 console.log(zh)

@@ -95,8 +95,8 @@ onMounted(() => {
     <section>
       <div class="sports">
         <div class="title">
-          <p class="text">文旅<span>宣传</span></p>
-          <button>查看更多 <img src="../assets/image/link.webp" alt="" /></button>
+          <p class="text">{{ $('tourism[0]') }}<span>{{ $('tourism[1]') }}</span></p>
+          <button>{{ $('page_more') }} <img src="../assets/image/link.webp" alt="" /></button>
         </div>
         <div class="items1">
           <div class="item" v-for="(item, index) in sportsList.top" :key="index">

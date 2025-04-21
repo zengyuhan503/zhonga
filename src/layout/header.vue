@@ -2,6 +2,7 @@
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { menu } from "@/api/list";
+import { useI18n } from "vue-i18n";
 // Your script here
 /**
  * 路由对象
@@ -12,31 +13,24 @@ const route = useRoute();
  */
 const router = useRouter();
 const lang = ref("zh"); // 语言选择
+const { t, locale } = useI18n(); // 国际化
 const langs = ref([
   {
     name: "中",
+    lang: "zh",
     active: true,
   },
   {
-    name: "EN",
+    name: "AR",
+    lang: "ar",
     active: false,
   },
 ]);
 
-const changeLang = (index) => {
-  langs.value.forEach((item, i) => {
-    item.active = i === index;
-  });
-};
 const menuList = ref([]); // 菜单列表
 const activeMenu = ref({}); // 当前选中的菜单
 const isshowMobule = ref(false);
-
-const switchMobileNavs = () => {
-  isshowMobule.value = !isshowMobule.value;
-};
-onMounted(() => {
-  // 获取路由参数
+const getMenu = () => {
   menu().then((res) => {
     if (res.code === 1) {
       menuList.value = res.data;
@@ -49,6 +43,29 @@ onMounted(() => {
       });
     }
   });
+};
+const switchMobileNavs = () => {
+  isshowMobule.value = !isshowMobule.value;
+};
+
+const changeLang = (index) => {
+  langs.value.forEach((item, i) => {
+    item.active = i === index;
+  });
+  localStorage.setItem("zhong-lang", langs.value[index].lang);
+  locale.value = langs.value[index].lang;
+  router.push("/");
+  getMenu();
+};
+
+onMounted(() => {
+  // 获取路由参数
+  langs.value.forEach((item, i) => {
+    if (item.lang === localStorage.getItem("zhong-lang")) {
+      item.active = true;
+    }
+  });
+  getMenu();
 });
 </script>
 
@@ -70,6 +87,16 @@ onMounted(() => {
             :class="{ active: route.path === item.urlname }"
           >
             <router-link :to="item.urlname">{{ item.name }}</router-link>
+          </div>
+
+          <div class="langs">
+            <span
+              :class="{ active: item.active }"
+              v-for="(item, index) in langs"
+              :key="index"
+              @click="changeLang(index)"
+              >{{ item.name }}</span
+            >
           </div>
         </div>
         <div class="mobile-navs" v-show="isshowMobule">
@@ -180,7 +207,7 @@ onMounted(() => {
   }
 }
 @media screen and (max-width: 700px) {
-  div{
+  div {
     font-size: 12px;
   }
   .header {

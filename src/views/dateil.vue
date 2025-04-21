@@ -51,26 +51,24 @@ onMounted(() => {
     <section class="">
       <div class="page-breadcrumb">
         <router-link to="/">
-          <img src="../assets/image/home.webp" alt="" /> 首页</router-link
+          <img src="../assets/image/home.webp" alt="" /> {{ $t("nav_home") }}</router-link
         >
         <span class="next"> > </span>
-        <span>详情</span>
+        <span>{{ $t("details") }}</span>
       </div>
       <div class="page-detail">
         <p class="title">{{ detail.title }}</p>
-        <p class="time">发布时间：{{ detail.create_time }}</p>
+        <p class="time">{{ detail.create_time }}</p>
         <img :src="detail.image" alt="" />
         <div class="content" v-html="detail.content"></div>
       </div>
       <div class="page-orther">
         <div class="per" @click="toUp">
-          <span>上一篇：</span
-          >{{ upandDown.up_list ? upandDown.up_list.title : "没有上一篇" }}
+          <span>{{ $t("previous_posts") }}</span>
         </div>
-        <div class="tohome" @click="router.push('/')">回到首页</div>
+        <div class="tohome" @click="router.push('/')">{{ $t("back_home") }}</div>
         <div class="next" @click="toDown">
-          <span>下一篇：</span>
-          {{ upandDown.down_list ? upandDown.down_list.title : "没有下一篇" }}
+          <span>{{ $t("next_posts") }}</span>
         </div>
       </div>
     </section>

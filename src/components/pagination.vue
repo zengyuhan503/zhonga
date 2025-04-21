@@ -22,14 +22,14 @@ const props = defineProps({
   <div class="pagination" v-show="props.pagination.last_page > 0">
     <!-- Your code here -->
     <div class="pagination-home pagebtn">
-      <button>首页</button>
+      <button>{{ $t("nav_home") }}</button>
     </div>
     <div class="pagination-per pagebtn">
       <button
         :disabled="props.pagination.page === 1"
         @click="props.pagination.onchange(props.pagination.page - 1)"
       >
-        上一页
+        {{ $t("pagination_prev") }}
       </button>
     </div>
     <div class="pagination-items">
@@ -47,14 +47,14 @@ const props = defineProps({
         :disabled="props.pagination.page === props.pagination.last_page"
         @click="props.pagination.onchange(props.pagination.page - 1)"
       >
-        下一页
+        {{ $t("pagination_next") }}
       </button>
     </div>
     <div
       class="pagination-last pagebtn"
       @click="props.pagination.onchange(props.pagination.last_page)"
     >
-      <button>尾页</button>
+      <button>{{ $t("pagination_last") }}</button>
     </div>
   </div>
 </template>

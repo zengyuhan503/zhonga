@@ -86,12 +86,12 @@ onMounted(() => {
     <section class="">
       <div class="page-breadcrumb">
         <router-link to="/">
-          <img src="../assets/image/home.webp" alt="" /> 首页</router-link
+          <img src="../assets/image/home.webp" alt="" /> {{ $t('nav_home') }}</router-link
         >
         <span class="next"> > </span>
-        <span>中心动态</span>
+        <span>{{ $t('nav_centralOriginal') }}</span>
         <span class="next"> > </span>
-        <span>学术内容</span>
+        <span>{{ $t('nav_literatureCenter') }}</span>
       </div>
       <div class="page-items">
         <div

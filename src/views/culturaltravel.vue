@@ -29,9 +29,10 @@ const pagination = ref({
   },
 });
 // 基础变量区域（通用性）
-
+const tabactive_aname = ref("");
 const tabChange = (id) => {
   tabactive.value = id;
+  tabactive_aname.value = child_list.value.find((item) => item.id === id).name;
   getList();
 };
 
@@ -77,7 +78,7 @@ onMounted(() => {
       </div>
     </div>
     <section class="">
-      <div class="page-title">亚非文旅快讯</div>
+      <div class="page-title">{{ tabactive_aname }}</div>
       <div class="page-items">
         <div
           class="page-item"

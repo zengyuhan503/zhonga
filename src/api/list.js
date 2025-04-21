@@ -1,7 +1,19 @@
 import axios from "axios";
+
 const get = async (url, params = null) => {
+
     return new Promise((resolve, reject) => {
-        axios.get(url, { params })
+        let args = { ...params }
+        let local = localStorage.getItem('zhong-lang');
+
+        if (local == '' || local == null) {
+            localStorage.setItem('zhong-lang', 'zh');
+            local = 'zh-cn';
+        }
+        let lang = local == 'ar' ? 'ar' : 'zh-cn';
+        args.lang = lang;
+        console.log(args)
+        axios.get(url, { params: args })
             .then(response => {
                 resolve(response.data);
             })

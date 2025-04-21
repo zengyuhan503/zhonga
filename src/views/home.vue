@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Swiper, SwiperSlide } from "swiper/vue";
 // import Swiper core and required modules
@@ -72,6 +72,43 @@ const getCategoryList = (id) => {
   });
 };
 const sports = ref([]);
+const getNewss = () => {
+  let params = {
+    page: 1,
+    limit: 6,
+    cid: newcid,
+  };
+
+  Promise.all([news.top(newcid), news.no_top_list(params)]).then((res) => {
+    if (res[0].code == 1 && res[1].code == 1) {
+      newsItems.value.top = res[0].data.data;
+      newsItems.value.list = res[1].data.data;
+    }
+  });
+};
+const getCategory = () => {
+  category(categoryid).then((res) => {
+    categorys.value = res.data;
+    categoryActive.value = categorys.value[0].id;
+    getCategoryList(categoryActive.value);
+  });
+};
+const getSports = () => {
+  listApi({ page: 1, limit: 6, cid: sportid }).then((res) => {
+    console.log(res);
+    if (res.code == 1) {
+      sports.value = res.data.data;
+    }
+  });
+};
+watch(
+  () => locale.value,
+  () => {
+    getNewss();
+    getCategory();
+    getSports();
+  }
+);
 onMounted(() => {
   bannerApi().then((res) => {
     if (res.code == 1) {
@@ -88,28 +125,9 @@ onMounted(() => {
   sportid = activeMenu.child_list.find((item) => {
     return item.name === "热门景点";
   })?.id;
-  let params = {
-    page: 1,
-    limit: 6,
-    cid: newcid,
-  };
-  Promise.all([news.top(newcid), news.no_top_list(params)]).then((res) => {
-    if (res[0].code == 1 && res[1].code == 1) {
-      newsItems.value.top = res[0].data.data;
-      newsItems.value.list = res[1].data.data;
-    }
-  });
-  category(categoryid).then((res) => {
-    categorys.value = res.data;
-    categoryActive.value = categorys.value[0].id;
-    getCategoryList(categoryActive.value);
-  });
-  listApi({ page: 1, limit: 6, cid: sportid }).then((res) => {
-    console.log(res);
-    if (res.code == 1) {
-      sports.value = res.data.data;
-    }
-  });
+  getNewss();
+  getCategory();
+  getSports();
 });
 </script>
 
