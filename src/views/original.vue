@@ -37,7 +37,9 @@ function splitIntoRowsOf3(arr) {
   return result;
 }
 // 基础函数区域（通用性）
-onMounted(() => {
+
+// 基础函数区域（通用性）
+const onloadMenu = () => {
   let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   sportid.value = activeMenu.child_list.find((item) => {
     return item.name === "文旅宣传";
@@ -86,17 +88,22 @@ onMounted(() => {
       }
     }
   );
-});
+};
+onMounted(() => {});
 </script>
 
 <template>
-  <PageBanner></PageBanner>
+  <PageBanner @onload="onloadMenu"></PageBanner>
   <div class="page-main">
     <section>
       <div class="sports">
         <div class="title">
-          <p class="text">{{ $('tourism[0]') }}<span>{{ $('tourism[1]') }}</span></p>
-          <button>{{ $('page_more') }} <img src="../assets/image/link.webp" alt="" /></button>
+          <p class="text">
+            {{ $t("tourism[0]") }}<span>{{ $t("tourism[1]") }}</span>
+          </p>
+          <button>
+            {{ $t("page_more") }} <img src="../assets/image/link.webp" alt="" />
+          </button>
         </div>
         <div class="items1">
           <div class="item" v-for="(item, index) in sportsList.top" :key="index">
@@ -125,11 +132,15 @@ onMounted(() => {
       </div>
     </section>
   </div>
-  <!--<div class="interviews">
+  <div class="interviews">
     <section>
       <div class="title">
-        <p class="text">人物<span>访谈</span></p>
-        <button>查看更多 <img src="../assets/image/link.webp" alt="" /></button>
+        <p class="text">
+          {{ $t("interview[0]") }}<span>{{ $t("interview[1]") }}</span>
+        </p>
+        <button>
+          {{ $t("page_more") }} <img src="../assets/image/link.webp" alt="" />
+        </button>
       </div>
       <div class="item1" v-if="sportsList.no_top.length > 2">
         <div class="left">
@@ -189,7 +200,7 @@ onMounted(() => {
       </div>
     </section>
   </div>
-  <Footer></Footer> -->
+  <Footer></Footer>
 </template>
 
 <style lang="less" scoped>

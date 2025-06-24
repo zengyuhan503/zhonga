@@ -41,17 +41,20 @@ const getList = () => {
     pagination.value.last_page = res.data.last_page;
   });
 };
-onMounted(() => {
+// 基础函数区域（通用性）
+const onloadMenu = () => {
   // 获取路由参数
   let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   console.log(activeMenu);
   cid = activeMenu.id;
   getList();
+};
+onMounted(() => {
 });
 </script>
 
 <template>
-  <PageBanner></PageBanner>
+  <PageBanner @onload="onloadMenu"></PageBanner>
   <div class="page-main">
     <section class="">
       <div class="page-items">

@@ -17,7 +17,10 @@ const router = useRouter();
 // 基础变量区域（通用性）
 // 基础函数区域（通用性）
 const detail = ref({}); // 新闻数据
-const upandDown = ref({}); // 上下篇数据
+const upandDown = ref({
+  up_list: [],
+  down_list: [],
+}); // 上下篇数据
 const getDetail = (id) => {
   pagedetailApi(id).then((res) => {
     console.log(res);
@@ -26,16 +29,18 @@ const getDetail = (id) => {
 };
 const getUpAndDown = (id) => {
   up_down_list(id).then((res) => {
-    console.log(res);
     upandDown.value = res.data;
   });
 };
 const toUp = () => {
   let id = upandDown.value.up_list.id;
+  getDetail(id);
   getUpAndDown(id);
 };
 const toDown = () => {
   let id = upandDown.value.down_list.id;
+  getDetail(id);
+
   getUpAndDown(id);
 };
 onMounted(() => {
@@ -65,10 +70,13 @@ onMounted(() => {
       <div class="page-orther">
         <div class="per" @click="toUp">
           <span>{{ $t("previous_posts") }}</span>
+          {{ upandDown.up_list.title ? upandDown.up_list.title : "没有上一篇了" }}
         </div>
         <div class="tohome" @click="router.push('/')">{{ $t("back_home") }}</div>
         <div class="next" @click="toDown">
           <span>{{ $t("next_posts") }}</span>
+          {{ upandDown.down_list.title }}
+          {{ upandDown.down_list.title ? upandDown.down_list.title : "没有下一篇了" }}
         </div>
       </div>
     </section>
@@ -121,6 +129,7 @@ onMounted(() => {
     .page-detail {
       padding: 50px 0;
       border-bottom: 1px solid #ebebeb;
+      width: 100%;
       .title {
         font-family: Source Han Sans CN, Source Han Sans CN;
         font-weight: 500;
@@ -128,6 +137,7 @@ onMounted(() => {
         color: #000000;
         line-height: 30px;
         text-align: center;
+        width: 100%;
       }
       .time {
         font-family: Source Han Sans CN, Source Han Sans CN;
@@ -138,6 +148,7 @@ onMounted(() => {
         text-align: center;
         margin-top: 20px;
         margin-bottom: 50px;
+        width: 100%;
       }
       & > img {
         max-width: 100%;
@@ -146,6 +157,9 @@ onMounted(() => {
       }
       .content {
         margin-top: 90px;
+        img {
+          max-width: 100%;
+        }
       }
     }
     .page-orther {
@@ -165,6 +179,10 @@ onMounted(() => {
         font-size: 16px;
         color: #999999;
         line-height: 20px;
+        width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         span {
           color: #333333;
         }

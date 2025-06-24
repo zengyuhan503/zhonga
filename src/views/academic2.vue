@@ -47,19 +47,24 @@ const getList = () => {
   });
 };
 
+
 // 基础函数区域（通用性）
-onMounted(() => {
+const onloadMenu = () => {
   let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   if (activeMenu) {
     child_list.value = activeMenu.child_list;
     tabactive.value = activeMenu.child_list[0].id;
     getList();
   }
+};
+// 基础函数区域（通用性）
+onMounted(() => {
+  
 });
 </script>
 
 <template>
-  <PageBanner></PageBanner>
+  <PageBanner @onload="onloadMenu"></PageBanner>
   <div class="page-main">
     <div class="page-tab">
       <div

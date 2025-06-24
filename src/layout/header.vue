@@ -3,6 +3,7 @@ import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { menu } from "@/api/list";
 import { useI18n } from "vue-i18n";
+let emit = defineEmits(["onload"]);
 // Your script here
 /**
  * 路由对象
@@ -39,6 +40,7 @@ const getMenu = () => {
           activeMenu.value = item;
           localStorage.setItem("activeMenu", JSON.stringify(item));
           console.log(item);
+          emit("onload");
         }
       });
     }

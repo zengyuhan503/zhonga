@@ -7,9 +7,10 @@ import { createI18n } from 'vue-i18n'
 import zh from './locales/zh.json'
 import ar from './locales/ar.json'
 
+let lang = localStorage.getItem('zhong-lang') || 'zh'
 let i18n = createI18n({
     legacy: false,
-    locale: 'zh',
+    locale: lang,
     globalInjection: true,
     fallbackLocale: 'zh',
     messages: {
@@ -17,7 +18,6 @@ let i18n = createI18n({
         ar: ar
     }
 })
-console.log(zh)
 const app = createApp(App)
 app.use(router).use(i18n);
 app.mount('#app');

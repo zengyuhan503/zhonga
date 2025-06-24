@@ -52,9 +52,7 @@ const getCategoryList = () => {
 };
 
 // 基础函数区域（通用性）
-onMounted(() => {
-  // 获取路由参数
-
+const onloadMenu = () => {
   let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
 
   categoryid = activeMenu.child_list.find((item) => {
@@ -66,11 +64,11 @@ onMounted(() => {
     categoryActive.value = categorys.value[0].id;
     getCategoryList();
   });
-});
+};
 </script>
 
 <template>
-  <PageBanner></PageBanner>
+  <PageBanner @onload="onloadMenu"></PageBanner>
   <div class="page-main">
     <div class="page-tab">
       <div
@@ -86,12 +84,12 @@ onMounted(() => {
     <section class="">
       <div class="page-breadcrumb">
         <router-link to="/">
-          <img src="../assets/image/home.webp" alt="" /> {{ $t('nav_home') }}</router-link
+          <img src="../assets/image/home.webp" alt="" /> {{ $t("nav_home") }}</router-link
         >
         <span class="next"> > </span>
-        <span>{{ $t('nav_centralOriginal') }}</span>
+        <span>{{ $t("nav_centralOriginal") }}</span>
         <span class="next"> > </span>
-        <span>{{ $t('nav_literatureCenter') }}</span>
+        <span>{{ $t("nav_literatureCenter") }}</span>
       </div>
       <div class="page-items">
         <div

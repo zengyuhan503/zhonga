@@ -13,7 +13,7 @@ const get = async (url, params = null) => {
         let lang = local == 'ar' ? 'ar' : 'zh-cn';
         args.lang = lang;
         console.log(args)
-        axios.get(url, { params: args })
+        axios.get("https://web.ccctcorg.cn"+url, { params: args })
             .then(response => {
                 resolve(response.data);
             })

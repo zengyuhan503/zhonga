@@ -52,7 +52,8 @@ const getList = () => {
 
 // 基础函数区域（通用性）
 
-onMounted(() => {
+// 基础函数区域（通用性）
+const onloadMenu = () => {
   let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   console.log(activeMenu);
   if (activeMenu) {
@@ -60,11 +61,11 @@ onMounted(() => {
     tabactive.value = activeMenu.child_list[0].id;
     getList();
   }
-});
+};
 </script>
 
 <template>
-  <PageBanner></PageBanner>
+  <PageBanner @onload="onloadMenu"></PageBanner>
   <div class="page-main">
     <div class="page-tab">
       <div

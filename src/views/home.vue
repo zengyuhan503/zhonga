@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import Header from "../layout/header.vue";
 import Footer from "@/layout/footer.vue";
-import { bannerApi, news, category, listApi } from "@/api/list";
+import { bannerApi, news, category, listApi, menu } from "@/api/list";
 import { useI18n } from "vue-i18n";
 
 // Import Swiper styles
@@ -109,30 +109,35 @@ watch(
     getSports();
   }
 );
+const onloadMenu = () => {
+  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+  if (activeMenu.child_list) {
+    newcid = activeMenu.child_list.find((item) => {
+      return item.name === t("nav_newsCenter");
+    })?.id;
+    categoryid = activeMenu.child_list.find((item) => {
+      return item.name === "中心动态";
+    })?.id;
+    sportid = activeMenu.child_list.find((item) => {
+      return item.name === "热门景点";
+    })?.id;
+
+    getNewss();
+    getCategory();
+    getSports();
+  }
+};
 onMounted(() => {
   bannerApi().then((res) => {
     if (res.code == 1) {
       banner.value = res.data[0].image;
     }
   });
-  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
-  newcid = activeMenu.child_list.find((item) => {
-    return item.name === t("nav_newsCenter");
-  })?.id;
-  categoryid = activeMenu.child_list.find((item) => {
-    return item.name === "中心动态";
-  })?.id;
-  sportid = activeMenu.child_list.find((item) => {
-    return item.name === "热门景点";
-  })?.id;
-  getNewss();
-  getCategory();
-  getSports();
 });
 </script>
 
 <template>
-  <Header />
+  <Header @onload="onloadMenu" />
   <div class="banner">
     <img :src="banner" alt="" />
     <!-- Your code here -->
