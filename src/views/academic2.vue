@@ -27,9 +27,11 @@ const pagination = ref({
     getList();
   },
 });
+let activeTab = null;
 
-const tabChange = (id) => {
-  tabactive.value = id;
+const tabChange = (item) => {
+  tabactive.value = item.id;
+  activeTab = item;
   getList();
 };
 // 基础变量区域（通用性）
@@ -47,20 +49,22 @@ const getList = () => {
   });
 };
 
+let activeMenu = null;
 
+const onToDetail = (id) => {
+  let name = activeMenu.name;
+  router.push({ path: "/pageDateil", query: { id: id, name: activeTab.name } });
+};
 // 基础函数区域（通用性）
 const onloadMenu = () => {
-  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+  activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   if (activeMenu) {
     child_list.value = activeMenu.child_list;
-    tabactive.value = activeMenu.child_list[0].id;
-    getList();
+    tabChange(activeMenu.child_list[0]);
   }
 };
 // 基础函数区域（通用性）
-onMounted(() => {
-  
-});
+onMounted(() => {});
 </script>
 
 <template>
@@ -72,27 +76,18 @@ onMounted(() => {
         v-for="(tab, index) in child_list"
         :key="index"
         :class="{ active: tabactive === tab.id }"
-        @click="tabChange(tab.id)"
+        @click="tabChange(tab)"
       >
         {{ tab.name }}
       </div>
     </div>
     <section class="">
-      <div class="page-breadcrumb">
-        <router-link to="/">
-          <img src="../assets/image/home.webp" alt="" /> {{ $t('nav_home') }}</router-link
-        >
-        <span class="next"> > </span>
-        <span>{{ $t('nav_centralOriginal') }}</span>
-        <span class="next"> > </span>
-        <span>{{ $t('nav_literatureCenter') }}</span>
-      </div>
       <div class="page-items">
         <div
           class="page-item"
           v-for="(item, index) in pagelist"
           :key="index"
-          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+          @click="onToDetail(item.id)"
         >
           <div class="item">
             <div

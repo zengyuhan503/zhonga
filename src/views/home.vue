@@ -8,6 +8,7 @@ import Header from "../layout/header.vue";
 import Footer from "@/layout/footer.vue";
 import { bannerApi, news, category, listApi, menu } from "@/api/list";
 import { useI18n } from "vue-i18n";
+import moment from "moment";
 
 // Import Swiper styles
 import "swiper/css";
@@ -45,7 +46,7 @@ const toNews = () => {
   router.push({ path: "/news", query: { cid } });
 };
 const toNewsDetail = (id) => {
-  router.push({ path: "/pageDateil", query: { id } });
+  router.push({ path: "/pageDateil", query: { id, name: "新闻详情" } });
 };
 const toCategory = () => {
   const cid = categoryid;
@@ -55,10 +56,11 @@ const toSpots = () => {
   const cid = sportid;
   router.push({ path: "/scenicspot", query: { cid } });
 };
-
-const changeCategory = (id) => {
-  categoryActive.value = id;
-  getCategoryList(id);
+let changeCategoryTab = null;
+const changeCategory = (item) => {
+  changeCategoryTab = item;
+  categoryActive.value = item.id;
+  getCategoryList(item.id);
 };
 const getCategoryList = (id) => {
   let params = {
@@ -82,7 +84,10 @@ const getNewss = () => {
   Promise.all([news.top(newcid), news.no_top_list(params)]).then((res) => {
     if (res[0].code == 1 && res[1].code == 1) {
       newsItems.value.top = res[0].data.data;
-      newsItems.value.list = res[1].data.data;
+      newsItems.value.list = res[1].data.data.map((item) => {
+        item.show_time = moment(item.show_time).format("YYYY-MM-DD");
+        return item;
+      });
     }
   });
 };
@@ -161,7 +166,11 @@ onMounted(() => {
               :space-between="0"
               pagination
             >
-              <swiper-slide v-for="(item, index) in newsItems.top" :key="index">
+              <swiper-slide
+                v-for="(item, index) in newsItems.top"
+                @click="toNewsDetail(item.id)"
+                :key="index"
+              >
                 <div
                   class="swiper-cover"
                   :style="`background: url(${item.image}) no-repeat center center;`"
@@ -198,7 +207,7 @@ onMounted(() => {
               v-for="item in categorys"
               :key="item.id"
               :class="{ active: item.id == categoryActive }"
-              @click="changeCategory(item.id)"
+              @click="changeCategory(item)"
             >
               {{ item.name }}
             </div>
@@ -213,7 +222,12 @@ onMounted(() => {
           class="page-item"
           v-for="(item, index) in categoryActiveList"
           :key="index"
-          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+          @click="
+            router.push({
+              path: '/pageDateil',
+              query: { id: item.id, name: changeCategoryTab.name },
+            })
+          "
         >
           <div class="item">
             <div
@@ -254,7 +268,12 @@ onMounted(() => {
           <swiper-slide
             v-for="(item, index) in sports"
             :key="index"
-            @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+            @click="
+              router.push({
+                path: '/pageDateil',
+                query: { id: item.id, name: `${$t('sport[0]')}${$t('sport[1]')}` },
+              })
+            "
           >
             <div
               class="swiper-cover"
@@ -400,6 +419,10 @@ section {
             font-size: 1rem;
             color: #999999;
             line-height: 19px;
+
+            width: 98px;
+            margin-left: 30px;
+            text-align: right;
           }
         }
       }

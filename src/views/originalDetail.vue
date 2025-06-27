@@ -14,8 +14,9 @@ const route = useRoute();
  * 路由实例
  */
 const router = useRouter();
-let activeMenu = null;
-let cid = null;
+const tabactive = ref("tab1"); // 选中的tab
+const cid = "";
+
 const pagelist = ref([]);
 const pagination = ref({
   page: 1,
@@ -27,7 +28,6 @@ const pagination = ref({
     getList();
   },
 });
-
 // 基础变量区域（通用性）
 const getList = () => {
   let parmaas = {
@@ -42,18 +42,18 @@ const getList = () => {
     pagination.value.last_page = res.data.last_page;
   });
 };
+
+// 基础函数区域（通用性）
+let activeMenu = null;
 const onToDetail = (id) => {
-  let name = activeMenu.name;
-  router.push({ path: "/pageDateil", query: { id: id, name: name } });
+  router.push({ path: "/pageDateil", query: { id: id, name: activeMenu.name } });
 };
 // 基础函数区域（通用性）
 const onloadMenu = () => {
-  // 获取路由参数
   activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
   cid = activeMenu.id;
   getList();
 };
-onMounted(() => {});
 </script>
 
 <template>
@@ -72,9 +72,10 @@ onMounted(() => {});
               class="cover"
               :style="`background: url(${item.image}) no-repeat center center;`"
             >
-              <img :src="item.image" alt="" />
+              <img src="../assets/image/academic2.webp" alt="" />
             </div>
             <div class="content">
+              <div class="time">{{ item.show_time }}</div>
               <div class="title">
                 {{ item.title }}
               </div>
@@ -100,7 +101,7 @@ onMounted(() => {});
     justify-content: space-between;
     align-items: center;
     .tab {
-      width: 33%;
+      width: 50%;
       height: 80px;
       font-family: Source Han Sans CN, Source Han Sans CN;
       font-weight: 400;
@@ -124,6 +125,16 @@ onMounted(() => {});
     width: 1200px;
     margin: 0 auto;
 
+    .page-title {
+      font-family: Source Han Sans CN, Source Han Sans CN;
+      font-weight: bold;
+      font-size: 40px;
+      color: #000000;
+      line-height: 47px;
+      text-align: center;
+      margin-top: 70px;
+    }
+
     .page-items {
       display: flex;
       justify-content: flex-start;
@@ -134,54 +145,76 @@ onMounted(() => {});
       min-height: 400px;
 
       .page-item {
-        width: 33%;
-        margin-bottom: 43px;
+        width: 25%;
+        margin-bottom: 13px;
         cursor: pointer;
         padding-left: 1%;
         padding-right: 10px;
         box-sizing: border-box;
+        min-height: 400px;
 
         div.item {
-          background: #fff9f9;
-          border-radius: 28px 28px 28px 28px;
-          padding: 32px;
-          display: flex;
-          justify-content: flex-start;
-          align-items: flex-start;
-
+          border-radius: 28px;
+          width: 100%;
+          overflow: hidden;
           .cover {
-            width: 28%;
-            overflow: hidden;
+            width: 100%;
+            background-size: cover;
+
             img {
               width: 100%;
+              display: block;
+              opacity: 0;
             }
           }
           .content {
-            width: 72%;
-            padding-left: 29px;
+            padding: 20px;
+            .time {
+              font-family: Arial, Arial;
+              font-weight: 400;
+              font-size: 14px;
+              color: #ababab;
+              line-height: 16px;
+            }
+            .title {
+              font-family: Source Han Sans CN, Source Han Sans CN;
+              font-weight: 500;
+              font-size: 1.375rem;
+              color: #111111;
+              line-height: 31px;
+              margin: 10px 0;
+              display: -webkit-box;
+              overflow: hidden;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+            }
+            .desc {
+              font-family: Source Han Sans CN, Source Han Sans CN;
+              font-weight: 400;
+              font-size: 14px;
+              color: #999999;
+              line-height: 16px;
+
+              display: -webkit-box;
+              overflow: hidden;
+              -webkit-line-clamp: 3;
+              -webkit-box-orient: vertical;
+            }
           }
-          .title {
-            font-family: Source Han Sans CN, Source Han Sans CN;
-            font-weight: 500;
-            font-size: 24px;
-            color: #000000;
-            line-height: 28px;
-            text-align: left;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-          .desc {
-            font-family: Source Han Sans CN, Source Han Sans CN;
-            font-weight: 400;
-            font-size: 14px;
-            color: #999999;
-            line-height: 16px;
-            text-align: left;
-            display: -webkit-box;
-            overflow: hidden;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+
+          &:hover {
+            background: linear-gradient(179deg, #de4d20 0%, #b81c22 100%);
+            .content {
+              .time {
+                color: #ffffff;
+              }
+              .title {
+                color: #ffffff;
+              }
+              .desc {
+                color: #ffffff;
+              }
+            }
           }
         }
       }

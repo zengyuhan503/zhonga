@@ -20,6 +20,7 @@ const categorys = ref([]);
 const categoryActive = ref(""); // 选中的tab
 const categoryActiveList = ref([]); // 选中的tab列表
 
+let activeMenu = null;
 const pagination = ref({
   page: 1,
   limit: 6,
@@ -32,9 +33,10 @@ const pagination = ref({
   },
 });
 // 基础变量区域（通用性）
-
-const changeCategory = (id) => {
-  categoryActive.value = id;
+let activeTab = null;
+const changeCategory = (item) => {
+  categoryActive.value = item.id;
+  activeTab = item;
   getCategoryList();
 };
 const getCategoryList = () => {
@@ -50,19 +52,20 @@ const getCategoryList = () => {
     pagination.value.last_page = res.data.last_page;
   });
 };
-
+const onToDetail = (id) => {
+  router.push({ path: "/pageDateil", query: { id: id, name: activeTab.name } });
+};
 // 基础函数区域（通用性）
 const onloadMenu = () => {
-  let activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
-
+  activeMenu = JSON.parse(localStorage.getItem("activeMenu"));
+  console.log(activeMenu);
   categoryid = activeMenu.child_list.find((item) => {
     return item.name === "中心动态";
   })?.id;
 
   category(categoryid).then((res) => {
     categorys.value = res.data;
-    categoryActive.value = categorys.value[0].id;
-    getCategoryList();
+    changeCategory(categorys.value[0]);
   });
 };
 </script>
@@ -76,27 +79,18 @@ const onloadMenu = () => {
         v-for="(tab, index) in categorys"
         :key="index"
         :class="{ active: categoryActive === tab.id }"
-        @click="changeCategory(tab.id)"
+        @click="changeCategory(tab)"
       >
         {{ tab.name }}
       </div>
     </div>
     <section class="">
-      <div class="page-breadcrumb">
-        <router-link to="/">
-          <img src="../assets/image/home.webp" alt="" /> {{ $t("nav_home") }}</router-link
-        >
-        <span class="next"> > </span>
-        <span>{{ $t("nav_centralOriginal") }}</span>
-        <span class="next"> > </span>
-        <span>{{ $t("nav_literatureCenter") }}</span>
-      </div>
       <div class="page-items">
         <div
           class="page-item"
           v-for="(item, index) in categoryActiveList"
           :key="index"
-          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+          @click="onToDetail(item.id)"
         >
           <div class="item">
             <div

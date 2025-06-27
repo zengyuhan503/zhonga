@@ -28,12 +28,18 @@ const pagination = ref({
     getList();
   },
 });
+let activeTab = null;
+
 // 基础变量区域（通用性）
 const tabactive_aname = ref("");
-const tabChange = (id) => {
-  tabactive.value = id;
-  tabactive_aname.value = child_list.value.find((item) => item.id === id).name;
+const tabChange = (item) => {
+  tabactive.value = item.id;
+  activeTab = item;
+  tabactive_aname.value = item.name;
   getList();
+};
+const onToDetail = (id) => {
+  router.push({ path: "/pageDateil", query: { id: id, name: activeTab.name } });
 };
 
 const getList = () => {
@@ -58,8 +64,7 @@ const onloadMenu = () => {
   console.log(activeMenu);
   if (activeMenu) {
     child_list.value = activeMenu.child_list;
-    tabactive.value = activeMenu.child_list[0].id;
-    getList();
+    tabChange(activeMenu.child_list[0]);
   }
 };
 </script>
@@ -73,7 +78,7 @@ const onloadMenu = () => {
         v-for="(tab, index) in child_list"
         :key="index"
         :class="{ active: tabactive === tab.id }"
-        @click="tabChange(tab.id)"
+        @click="tabChange(tab)"
       >
         {{ tab.name }}
       </div>
@@ -85,7 +90,7 @@ const onloadMenu = () => {
           class="page-item"
           v-for="(item, index) in pagelist"
           :key="index"
-          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+          @click="onToDetail(item.id)"
         >
           <div class="item">
             <div

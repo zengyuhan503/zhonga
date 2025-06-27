@@ -54,13 +54,6 @@ onMounted(() => {
   <PageBanner></PageBanner>
   <div class="page-main">
     <section class="">
-      <div class="page-breadcrumb">
-        <router-link to="/">
-          <img src="../assets/image/home.webp" alt="" /> {{ $t("nav_home") }}</router-link
-        >
-        <span class="next"> > </span>
-        <span>{{ $t("details") }}</span>
-      </div>
       <div class="page-detail">
         <p class="title">{{ detail.title }}</p>
         <p class="time">{{ detail.create_time }}</p>

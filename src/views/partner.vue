@@ -54,8 +54,7 @@ const onloadMenu = () => {
 };
 
 // 基础函数区域（通用性）
-onMounted(() => {
-});
+onMounted(() => {});
 </script>
 
 <template>
@@ -63,12 +62,7 @@ onMounted(() => {
   <div class="page-main">
     <section class="">
       <div class="page-items">
-        <div
-          class="page-item"
-          v-for="(item, index) in pagelist"
-          :key="index"
-          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
-        >
+        <div class="page-item" v-for="(item, index) in pagelist" :key="index">
           <div class="item">
             <img :src="item.image" alt="" />
           </div>

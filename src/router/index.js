@@ -4,6 +4,7 @@ import home from '@/views/home.vue'
 import academic from '@/views/academic.vue'
 import academic2 from '@/views/academic2.vue'
 import original from '@/views/original.vue'
+import originalDetail from '@/views/originalDetail.vue'
 import news from '@/views/news.vue'
 import scenicspot from '@/views/scenicspot.vue'
 import literature from '@/views/literature.vue'
@@ -29,6 +30,11 @@ const router = createRouter({
       path: '/original',
       name: '中心原创',
       component: original
+    },
+    {
+      path: '/originalDetail',
+      name: '中心原创子栏目',
+      component: originalDetail
     },
     {
       path: '/academic2',

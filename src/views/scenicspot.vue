@@ -58,7 +58,12 @@ onMounted(() => {
           class="page-item"
           v-for="(item, index) in sports"
           :key="index"
-          @click="router.push({ path: '/pageDateil', query: { id: item.id } })"
+          @click="
+            router.push({
+              path: '/pageDateil',
+              query: { id: item.id, name: `${$t('sport[0]')}${$t('sport[1]')}` },
+            })
+          "
         >
           <div class="item">
             <div

@@ -26,6 +26,9 @@ const items2list = ref({
   top: [],
   no_top: [],
 });
+const toDetail = (id, name) => {
+  router.push({ path: "/originalDetail", query: { id: id, name: name } });
+};
 
 // 基础变量区域（通用性）
 function splitIntoRowsOf3(arr) {
@@ -101,19 +104,29 @@ onMounted(() => {});
           <p class="text">
             {{ $t("tourism[0]") }}<span>{{ $t("tourism[1]") }}</span>
           </p>
-          <button>
+          <button @click="toDetail(sportid, '文旅宣传')">
             {{ $t("page_more") }} <img src="../assets/image/link.webp" alt="" />
           </button>
         </div>
-        <div class="items1">
-          <div class="item" v-for="(item, index) in sportsList.top" :key="index">
-            <div
-              class="cover"
-              :style="`background: url(${item.image}) no-repeat center center;`"
-            >
-              <img src="../assets/image/academic.webp" alt="" />
+        <div style="min-height: 300">
+          <div class="items1">
+            <div class="item" v-for="(item, index) in sportsList.top" :key="index">
+              <div
+                class="cover"
+                :style="`background: url(${item.image}) no-repeat center center;`"
+              >
+                <img src="../assets/image/academic.webp" alt="" />
+              </div>
+              <div class="content">
+                <div class="time">{{ item.time }}</div>
+                <div class="title">
+                  {{ item.title }}
+                </div>
+              </div>
             </div>
-            <div class="content">
+          </div>
+          <div class="item2">
+            <div class="item" v-for="(item, index) in sportsList.no_top" :key="index">
               <div class="time">{{ item.time }}</div>
               <div class="title">
                 {{ item.title }}
@@ -121,70 +134,64 @@ onMounted(() => {});
             </div>
           </div>
         </div>
-        <div class="item2">
-          <div class="item" v-for="(item, index) in sportsList.no_top" :key="index">
-            <div class="time">{{ item.time }}</div>
-            <div class="title">
-              {{ item.title }}
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   </div>
-  <div class="interviews">
+  <div class="interviews page-main">
     <section>
       <div class="title">
         <p class="text">
           {{ $t("interview[0]") }}<span>{{ $t("interview[1]") }}</span>
         </p>
-        <button>
+        <button @click="toDetail(items2id, '人物访谈')">
           {{ $t("page_more") }} <img src="../assets/image/link.webp" alt="" />
         </button>
       </div>
-      <div class="item1" v-if="sportsList.no_top.length > 2">
-        <div class="left">
-          <div
-            class="cover"
-            :style="`background: url(${sportsList.no_top[0].image}) no-repeat center center;`"
-          >
-            <img :src="sportsList.no_top[0].image" alt="" />
-          </div>
-          <div class="content">
-            <div class="title">{{ sportsList.no_top[0].title }}</div>
-            <div class="desc">
-              {{ sportsList.no_top[0].description }}
-            </div>
-          </div>
-        </div>
-        <div class="right">
-          <div class="item">
+      <div style="min-height: 400px">
+        <div class="item1" v-if="sportsList.no_top.length > 0">
+          <div class="left">
             <div
               class="cover"
-              :style="`background: url(${sportsList.no_top[1].image}) no-repeat center center;`"
+              :style="`background: url(${sportsList.no_top[0].image}) no-repeat center center;`"
             >
-              <img src="../assets/image/academic1.webp" alt="" />
+              <img :src="sportsList.no_top[0].image" alt="" />
             </div>
             <div class="content">
-              <div class="time">{{ sportsList.no_top[1].time }}</div>
-              <div class="title">{{ sportsList.no_top[1].title }}</div>
+              <div class="title">{{ sportsList.no_top[0].title }}</div>
               <div class="desc">
-                {{ sportsList.no_top[1].description }}
+                {{ sportsList.no_top[0].description }}
               </div>
             </div>
           </div>
-          <div class="item">
-            <div
-              class="cover"
-              :style="`background: url(${sportsList.no_top[2].image}) no-repeat `"
-            >
-              <img src="../assets/image/academic1.webp" alt="" />
+          <div class="right">
+            <div class="item">
+              <div
+                class="cover"
+                :style="`background: url(${sportsList.no_top[1].image}) no-repeat center center;`"
+              >
+                <img src="../assets/image/academic1.webp" alt="" />
+              </div>
+              <div class="content">
+                <div class="time">{{ sportsList.no_top[1].time }}</div>
+                <div class="title">{{ sportsList.no_top[1].title }}</div>
+                <div class="desc">
+                  {{ sportsList.no_top[1].description }}
+                </div>
+              </div>
             </div>
-            <div class="content">
-              <div class="time">{{ sportsList.no_top[2].time }}</div>
-              <div class="title">{{ sportsList.no_top[2].title }}</div>
-              <div class="desc">
-                {{ sportsList.no_top[2].description }}
+            <div class="item">
+              <div
+                class="cover"
+                :style="`background: url(${sportsList.no_top[2].image}) no-repeat `"
+              >
+                <img src="../assets/image/academic1.webp" alt="" />
+              </div>
+              <div class="content">
+                <div class="time">{{ sportsList.no_top[2].time }}</div>
+                <div class="title">{{ sportsList.no_top[2].title }}</div>
+                <div class="desc">
+                  {{ sportsList.no_top[2].description }}
+                </div>
               </div>
             </div>
           </div>
@@ -537,9 +544,23 @@ onMounted(() => {});
   }
 }
 @media screen and (max-width: 700px) {
+  .interviews {
+    section {
+      width: 100%;
+
+      & > .title {
+        .text {
+          font-size: 1.25rem;
+        }
+        button {
+        }
+      }
+    }
+  }
   .page-main section {
     width: 100%;
     padding: 0 26px;
+
     .sports {
       & > .title {
         .text {

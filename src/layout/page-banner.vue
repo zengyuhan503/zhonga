@@ -3,7 +3,7 @@ import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { menu } from "@/api/list";
 import { useI18n } from "vue-i18n";
-let emit = defineEmits(["onload"])
+let emit = defineEmits(["onload"]);
 
 // Your script here
 /**
@@ -16,6 +16,7 @@ const route = useRoute();
 const router = useRouter();
 const lang = ref("zh"); // 语言选择
 const { t, locale } = useI18n(); // 国际化
+const pageTitile = ref(route.name);
 const langs = ref([
   {
     name: "中",
@@ -35,16 +36,19 @@ const activeMenu = ref({}); // 当前选中的菜单
 const isshowMobule = ref(false);
 const getMenu = () => {
   menu().then((res) => {
+    console.log(res);
     if (res.code === 1) {
       menuList.value = res.data;
       menuList.value.forEach((item) => {
         if (item.urlname === route.path) {
           activeMenu.value = item;
           localStorage.setItem("activeMenu", JSON.stringify(item));
-          console.log(item);
-          emit("onload")
+          emit("onload");
         }
       });
+      if ((route.path =="/originalDetail")) {
+          emit("onload");
+        }
     }
   });
 };
@@ -63,6 +67,7 @@ const changeLang = (index) => {
 };
 
 onMounted(() => {
+  console.log(route.query);
   // 获取路由参数
   langs.value.forEach((item, i) => {
     if (item.lang === localStorage.getItem("zhong-lang")) {
@@ -70,6 +75,7 @@ onMounted(() => {
     }
   });
   getMenu();
+  pageTitile.value = route.query.name || route.name;
 });
 </script>
 
@@ -127,7 +133,7 @@ onMounted(() => {
     <img src="../assets/image/header-back2.webp" alt="" />
     <!-- Your code here -->
     <div class="banner-text">
-      <p>{{ route.name }}</p>
+      <p>{{ pageTitile }}</p>
     </div>
   </div>
 </template>
