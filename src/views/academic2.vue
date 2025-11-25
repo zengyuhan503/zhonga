@@ -133,6 +133,7 @@ onMounted(() => {});
       border-bottom: 4px solid #f1f1f1;
       display: flex;
       justify-content: center;
+      text-align: center;
       align-items: center;
       cursor: pointer;
       &.active {

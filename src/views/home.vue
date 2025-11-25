@@ -94,8 +94,7 @@ const getNewss = () => {
 const getCategory = () => {
   category(categoryid).then((res) => {
     categorys.value = res.data;
-    categoryActive.value = categorys.value[0].id;
-    getCategoryList(categoryActive.value);
+    changeCategory(res.data[0]);
   });
 };
 const getSports = () => {

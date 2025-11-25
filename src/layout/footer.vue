@@ -39,6 +39,9 @@ const router = useRouter();
         <img src="../assets/image/footer-log.webp" alt="" />
       </div>
     </div>
+    <div class="footer-content beian" style="margin: 0 auto; padding: 20px 0;">
+        <a href="https://beian.miitgov.cn" style="color: #fff;" target=" blank">京ICP备05067963号-4</a>
+    </div>
     <!-- Your code here -->
   </div>
 </template>
@@ -123,6 +126,9 @@ const router = useRouter();
       width: 50%;
       text-align: center;
       margin: 20px auto 0;
+    }
+    .beian{
+      text-align: center;
     }
   }
 }

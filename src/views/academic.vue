@@ -44,7 +44,7 @@ const getCategoryList = () => {
     page: pagination.value.page,
     limit: pagination.value.limit,
     cid: categoryActive.value,
-  };
+  };activeMenu
   listApi(params).then((res) => {
     console.log(res);
     categoryActiveList.value = res.data.data;
